@@ -4,8 +4,8 @@ from Objects import Blocks
 pygame.init
 
 FPS = 120
-WIDTH = 1000
-HEIGHT = 900
+WIDTH = 800
+HEIGHT = 600
 ACCELERATION = 0.25
 speed = 0
 max_speed = 6
@@ -50,11 +50,11 @@ while running:
 
     #Stops the player from leaving the screen in the x axis
     if coords.x <= 0 + radius:
-        movingl = False
+        #movingl = False
         speed = 0
         coords.x = 0 + radius
     elif coords.x >= WIDTH - radius:
-        movingr = False
+        #movingr = False
         speed = 0
         coords.x = WIDTH - radius
     else:
@@ -62,8 +62,8 @@ while running:
         movingr = True
     
 
-    """Detects if colliding with the y value of the blocks and also 
-    allows the player to jump when on top of the block"""
+    #Detects if colliding with the y value of the blocks and also 
+    #allows the player to jump when on top of the block
     if greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bongo_y":
         if jumpCount >= -6:
             jumpCount = -2
@@ -78,6 +78,11 @@ while running:
         else:
             jump = False
             falling = False
+    elif greyrect.collision(Vector2(coords.x, coords.y), radius) == "Blangus":
+        jump = False
+        coords.y += 0.5*jumpCount
+        doublejump = 0
+        coords.y -= 1
 
     #Handles the x axis collisions and stopping movement in that direction
     if greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bango_x":

@@ -25,7 +25,7 @@ class Blocks:
                 circle_center.y = closest_y - circle_radius - 1
                 return "Bango_y"
 
-            elif circle_center.y + circle_radius < closest_y + 10:
+            elif circle_center.y + circle_radius + 7 < closest_y + 10:
                 return "Blangus"
             
             elif circle_center.y > closest_y:
@@ -33,12 +33,12 @@ class Blocks:
                 return "Bongo_y"
             
             #Both below are x axis collision detection
-            elif circle_center.x > closest_x - 1:
-                circle_center.x = closest_x - circle_radius - 1
+            elif circle_center.x > self.position.x:
+                #circle_center.x = closest_x - circle_radius - 1
                 return "Bango_x"
             
-            elif circle_center.x < closest_x:
-                circle_center.x = closest_x + circle_radius + 1
+            elif circle_center.x < self.position.x + self.size.x:
+                #circle_center.x += circle_radius
                 return "Bongo_x"
             
             
