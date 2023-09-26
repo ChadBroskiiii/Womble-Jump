@@ -20,7 +20,7 @@ class Blocks:
         
         if distance_vect.length() <= circle_radius*1.3:
 
-            #When on top of the block
+            #When on top of the blocks
             if circle_center.y + circle_radius < closest_y:
                 circle_center.y = closest_y - circle_radius - 1
                 return "Bango_y"

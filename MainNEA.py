@@ -63,7 +63,7 @@ while running:
     
 
     #Detects if colliding with the y value of the blocks and also 
-    #allows the player to jump when on top of the block
+    #allows the player to jump when on top of the blocks
     if greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bongo_y":
         if jumpCount >= -6:
             jumpCount = -2
