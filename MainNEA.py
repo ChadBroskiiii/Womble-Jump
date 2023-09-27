@@ -24,7 +24,7 @@ maxjumpscount = 2
 on_ground = True
 falling = False
 
-greyrect = Blocks(window, (200,200,200), (WIDTH/2, HEIGHT/1.3), (100, 50))
+greyrect = Blocks(window, (200,200,200), (WIDTH/3, HEIGHT/1.5), (100, 100))
 
 movingl = True
 movingr = True
@@ -86,10 +86,19 @@ while running:
 
     #Handles the x axis collisions and stopping movement in that direction
     if greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bango_x":
-        movingl = False
-    elif greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bongo_x":
-        movingr = False
-        
+        coords.x = greyrect.position.x + greyrect.size.x + radius
+        if coords.x == greyrect.position.x + greyrect.size.x + radius:
+            coords.x += 3
+            greyrect.collision(Vector2(coords.x, coords.y), radius) == False
+            movingl = False
+    if greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bongo_x":
+        coords.x = greyrect.position.x - radius
+        if coords.x == greyrect.position.x - radius:
+            coords.x -= 3
+            greyrect.collision(Vector2(coords.x, coords.y), radius) == False
+            movingr = False
+    
+    print(movingl, movingr)
 
     #The jump calculation for the acceleration and other stuff
     if jump:
