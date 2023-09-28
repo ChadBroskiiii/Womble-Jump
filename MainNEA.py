@@ -78,12 +78,18 @@ while running:
         else:
             jump = False
             falling = False
+            jumpCount == 0
+            if jumpCount < -0.5:
+                jumpCount += 0.1
     elif greyrect.collision(Vector2(coords.x, coords.y), radius) == "Blangus":
         jump = False
         coords.y += 0.5*jumpCount
         doublejump = 0
         coords.y -= 1
-
+    elif greyrect.collision(Vector2(coords.x, coords.y), radius) == False and on_ground == False:
+        jump = True
+        falling = True
+        
     #Handles the x axis collisions and stopping movement in that direction
     if greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bango_x":
         coords.x = greyrect.position.x + greyrect.size.x + radius
@@ -98,8 +104,6 @@ while running:
             greyrect.collision(Vector2(coords.x, coords.y), radius) == False
             movingr = False
             coords.x -= 1
-    
-    print(movingl, movingr)
 
     #The jump calculation for the acceleration and other stuff
     if jump:
@@ -147,12 +151,6 @@ while running:
         speed = max_speed
     coords.x += speed
 
-
-    
-    
-    
-        
-        
 
     window.fill(bg_colour)
     greyrect.draw()
