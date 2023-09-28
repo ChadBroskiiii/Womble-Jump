@@ -97,6 +97,7 @@ while running:
             coords.x -= 3
             greyrect.collision(Vector2(coords.x, coords.y), radius) == False
             movingr = False
+            coords.x -= 1
     
     print(movingl, movingr)
 
