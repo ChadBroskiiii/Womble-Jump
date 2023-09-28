@@ -1,4 +1,4 @@
-import pygame, math
+import pygame, math, socket
 from pygame import Vector2
 from Objects import Blocks
 pygame.init
@@ -13,6 +13,7 @@ bg_colour = (0, 0, 0)
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Him")
 clock = pygame.time.Clock()
+clientnumber = 000
 
 radius = 10
 coords = Vector2(WIDTH/2, HEIGHT - 20)
