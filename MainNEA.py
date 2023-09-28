@@ -25,7 +25,8 @@ maxjumpscount = 2
 on_ground = True
 falling = False
 
-greyrect = Blocks(window, (200,200,200), (WIDTH/3, HEIGHT/1.5), (100, 100))
+circle_hbox = pygame.rect.Rect((coords.x - radius), (coords.y + radius), radius*2 + 1, radius*2 + 1)
+greyrect = Blocks(window, (200,200,200), (WIDTH/3, HEIGHT/1.5), (100, 100), ())
 
 movingl = True
 movingr = True
@@ -41,6 +42,7 @@ while running:
             #Jumps when the space key is pressed
             #And can only jump once in the air
             if event.key == pygame.K_SPACE:
+                spacecount = True
                 if doublejump < maxjumpscount:
                     jump = True
                     jumpCount = jumpMaximum
@@ -73,9 +75,14 @@ while running:
     elif greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bango_y":
         falling = False
         doublejump = 1
-        if not falling and keys[pygame.K_SPACE]:
-            jump = True
-            falling = True
+        if not falling and spacecount == True:
+            if pygame.Rect.colliderect(circle_hbox, greyrect.rect):
+                jump = False
+                jumpCount = 0
+                coords.y = greyrect.position.y - radius - 2
+            else:
+                jump = True
+                falling = True
         else:
             jump = False
             falling = False
@@ -155,6 +162,7 @@ while running:
 
     window.fill(bg_colour)
     greyrect.draw()
-    pygame.draw.circle(window, (255, 0, 0), (coords.x, coords.y), radius)
+    circle = pygame.draw.circle(window, (255, 0, 0), (coords.x, coords.y), radius)
+    pygame.Rect.clamp(circle, circle_hbox)
     clock.tick(FPS)
     pygame.display.flip()

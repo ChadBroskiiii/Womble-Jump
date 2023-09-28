@@ -3,15 +3,15 @@ from pygame import Vector2
 
 class Blocks:
 
-    def __init__(self, surface, color, position, size):
+    def __init__(self, surface, color, position, size, rect):
         self.surface = surface
         self.color = color
         self.position = Vector2(position)
         self.size = Vector2(size)
+        self.rect = pygame.Rect(self.position, self.size)
 
     def draw(self):
-        rect = pygame.Rect(self.position, self.size)
-        pygame.draw.rect(self.surface, self.color, rect)
+        pygame.draw.rect(self.surface, self.color, self.rect)
 
     def collision(self, circle_center, circle_radius):
         closest_x = max(self.position.x, min(circle_center.x, self.position.x + self.size.x))
