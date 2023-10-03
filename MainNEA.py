@@ -28,11 +28,13 @@ falling = False
 circle_hbox = pygame.rect.Rect((coords.x - radius), (coords.y + radius), radius*2 + 1, radius*2 + 1)
 greyrect = Blocks(window, (200,200,200), (WIDTH/3, HEIGHT/1.5), (100, 100), ())
 
+
 movingl = True
 movingr = True
 running = True
 while running:
     pygame.time.delay(0)
+    shadow_oval = pygame.Rect(coords.x - radius + 2, coords.y - radius, radius*2 - 2, radius*2 + 2)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -72,32 +74,26 @@ while running:
             jumpCount = -2
         else:
             jumpCount = jumpCount
+
     elif greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bango_y":
-        falling = False
-        doublejump = 1
-        if not falling and spacecount == True:
-            if pygame.Rect.colliderect(circle_hbox, greyrect.rect):
-                jump = False
-                jumpCount = 0
-                coords.y = greyrect.position.y - radius - 2
-            else:
-                jump = True
-                falling = True
-        else:
-            jump = False
-            falling = False
-            jumpCount == 0
-            if jumpCount < -0.5:
-                jumpCount += 0.1
+        jumpCount = 0
+        doublejump = 0
+        if keys[pygame.K_SPACE]:
+            jump = True
+            jumpCount = jumpMaximum
+            doublejump += 1
+
     elif greyrect.collision(Vector2(coords.x, coords.y), radius) == "Blangus":
         jump = False
         coords.y += 0.5*jumpCount
         doublejump = 0
         coords.y -= 1
+
     elif greyrect.collision(Vector2(coords.x, coords.y), radius) == False and on_ground == False:
         jump = True
         falling = True
         
+
     #Handles the x axis collisions and stopping movement in that direction
     if greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bango_x":
         coords.x = greyrect.position.x + greyrect.size.x + radius
@@ -162,7 +158,9 @@ while running:
 
     window.fill(bg_colour)
     greyrect.draw()
+    #shadow = pygame.draw.ellipse(window, (0, 0, 0), shadow_oval)
     circle = pygame.draw.circle(window, (255, 0, 0), (coords.x, coords.y), radius)
+    #pygame.Rect.clamp(circle, shadow)
     pygame.Rect.clamp(circle, circle_hbox)
     clock.tick(FPS)
     pygame.display.flip()

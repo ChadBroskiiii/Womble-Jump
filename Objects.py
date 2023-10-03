@@ -12,6 +12,15 @@ class Blocks:
 
     def draw(self):
         pygame.draw.rect(self.surface, self.color, self.rect)
+        widthdiff = 10
+        height = 50
+        bottomleft = Vector2((self.position.x), (self.position.y))
+        topleft = Vector2((self.position.x + widthdiff), (self.position.y - height))
+        bottomright = Vector2((self.position.x + self.size.x), (self.position.y))
+        topright = Vector2((self.position.x + self.size.x - widthdiff), (self.position.y - height))
+        trapezium_coords = [topleft, bottomleft, bottomright, topright]
+        pygame.draw.polygon(self.surface, (125,125,125), trapezium_coords)
+
 
     def collision(self, circle_center, circle_radius):
         closest_x = max(self.position.x, min(circle_center.x, self.position.x + self.size.x))
