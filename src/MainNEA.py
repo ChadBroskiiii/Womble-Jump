@@ -29,6 +29,7 @@ circle_hbox = pygame.rect.Rect((coords.x - radius), (coords.y + radius), radius*
 
 blocks = [
     Blocks(window, (200,200,200), (WIDTH/3, HEIGHT/1.5), (100, 100), ()),
+    Blocks(window, (200,200,0), (WIDTH/2, 250), (150, 50), ())
 ]
 #greyrect = Blocks(window, (200,200,200), (WIDTH/3, HEIGHT/1.5), (100, 100), ())
 
@@ -83,7 +84,7 @@ while running:
             else:
                 jumpCount = jumpCount
 
-        elif platform.collision(Vector2(coords.x, coords.y + 10), radius) == "Bango_y":
+        elif platform.collision(Vector2(coords.x, coords.y + 7), radius) == "Bango_y":
             jumpCount = 0
             doublejump = 0
             if keys[pygame.K_SPACE]:
@@ -106,16 +107,15 @@ while running:
         if platform.collision(Vector2(coords.x, coords.y), radius + 5) == "Bango_x":
             coords.x = platform.position.x + platform.size.x + radius
             if coords.x == platform.position.x + platform.size.x + radius:
-                coords.x += 3
+                coords.x += 5
                 collision_result == False
                 movingl = False
         if platform.collision(Vector2(coords.x, coords.y), radius + 5) == "Bongo_x":
             coords.x = platform.position.x - radius
             if coords.x == platform.position.x - radius:
-                coords.x -= 3
+                coords.x -= 5
                 collision_result == False
                 movingr = False
-                coords.x -= 1
 
     #The jump calculation for the acceleration and other stuff
     if jump:
