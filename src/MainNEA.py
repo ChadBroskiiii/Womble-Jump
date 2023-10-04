@@ -1,7 +1,7 @@
 import pygame, math, socket
 from pygame import Vector2
 from Objects import Blocks
-pygame.init
+pygame.init()
 
 FPS = 120
 WIDTH = 800
@@ -26,7 +26,11 @@ on_ground = True
 falling = False
 
 circle_hbox = pygame.rect.Rect((coords.x - radius), (coords.y + radius), radius*2 + 1, radius*2 + 1)
-greyrect = Blocks(window, (200,200,200), (WIDTH/3, HEIGHT/1.5), (100, 100), ())
+
+blocks = [
+    Blocks(window, (200,200,200), (WIDTH/3, HEIGHT/1.5), (100, 100), ()),
+]
+#greyrect = Blocks(window, (200,200,200), (WIDTH/3, HEIGHT/1.5), (100, 100), ())
 
 
 movingl = True
@@ -66,48 +70,52 @@ while running:
         movingl = True
         movingr = True
     
-    print(greyrect.collision(Vector2(coords.x, coords.y), radius))
         #Detects if colliding with the y value of the blocks and also 
     #allows the player to jump when on top of the blocks
-    if greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bongo_y":
-        if jumpCount >= -6:
-            jumpCount = -2
-        else:
-            jumpCount = jumpCount
 
-    elif greyrect.collision(Vector2(coords.x, coords.y + 10), radius) == "Bango_y":
-        jumpCount = 0
-        doublejump = 0
-        if keys[pygame.K_SPACE]:
+    for platform in blocks:
+
+        collision_result = platform.collision(Vector2(coords.x, coords.y), radius)
+
+        if collision_result == "Bongo_y":
+            if jumpCount >= -6:
+                jumpCount = -2
+            else:
+                jumpCount = jumpCount
+
+        elif platform.collision(Vector2(coords.x, coords.y + 10), radius) == "Bango_y":
+            jumpCount = 0
+            doublejump = 0
+            if keys[pygame.K_SPACE]:
+                jump = True
+                jumpCount = jumpMaximum
+                doublejump += 1
+
+        elif collision_result == "Blangus":
+            jump = False
+            coords.y += 0.5*jumpCount
+            doublejump = 0
+            coords.y -= 1
+
+        elif collision_result == False and on_ground == False:
             jump = True
-            jumpCount = jumpMaximum
-            doublejump += 1
+            falling = True
+            
 
-    elif greyrect.collision(Vector2(coords.x, coords.y), radius) == "Blangus":
-        jump = False
-        coords.y += 0.5*jumpCount
-        doublejump = 0
-        coords.y -= 1
-
-    elif greyrect.collision(Vector2(coords.x, coords.y), radius) == False and on_ground == False:
-        jump = True
-        falling = True
-        
-
-    #Handles the x axis collisions and stopping movement in that direction
-    if greyrect.collision(Vector2(coords.x, coords.y), radius + 10) == "Bango_x":
-        coords.x = greyrect.position.x + greyrect.size.x + radius
-        if coords.x == greyrect.position.x + greyrect.size.x + radius:
-            coords.x += 3
-            greyrect.collision(Vector2(coords.x, coords.y), radius) == False
-            movingl = False
-    if greyrect.collision(Vector2(coords.x, coords.y), radius + 10) == "Bongo_x":
-        coords.x = greyrect.position.x - radius
-        if coords.x == greyrect.position.x - radius:
-            coords.x -= 3
-            greyrect.collision(Vector2(coords.x, coords.y), radius) == False
-            movingr = False
-            coords.x -= 1
+        #Handles the x axis collisions and stopping movement in that direction
+        if platform.collision(Vector2(coords.x, coords.y), radius + 5) == "Bango_x":
+            coords.x = platform.position.x + platform.size.x + radius
+            if coords.x == platform.position.x + platform.size.x + radius:
+                coords.x += 3
+                collision_result == False
+                movingl = False
+        if platform.collision(Vector2(coords.x, coords.y), radius + 5) == "Bongo_x":
+            coords.x = platform.position.x - radius
+            if coords.x == platform.position.x - radius:
+                coords.x -= 3
+                collision_result == False
+                movingr = False
+                coords.x -= 1
 
     #The jump calculation for the acceleration and other stuff
     if jump:
@@ -157,7 +165,8 @@ while running:
 
 
     window.fill(bg_colour)
-    greyrect.draw()
+    for platform in blocks:
+        platform.draw()
     #shadow = pygame.draw.ellipse(window, (0, 0, 0), shadow_oval)
     circle = pygame.draw.circle(window, (255, 0, 0), (coords.x, coords.y), radius)
     #pygame.Rect.clamp(circle, shadow)
