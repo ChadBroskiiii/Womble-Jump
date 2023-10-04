@@ -66,8 +66,8 @@ while running:
         movingl = True
         movingr = True
     
-
-    #Detects if colliding with the y value of the blocks and also 
+    print(greyrect.collision(Vector2(coords.x, coords.y), radius))
+        #Detects if colliding with the y value of the blocks and also 
     #allows the player to jump when on top of the blocks
     if greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bongo_y":
         if jumpCount >= -6:
@@ -75,7 +75,7 @@ while running:
         else:
             jumpCount = jumpCount
 
-    elif greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bango_y":
+    elif greyrect.collision(Vector2(coords.x, coords.y + 10), radius) == "Bango_y":
         jumpCount = 0
         doublejump = 0
         if keys[pygame.K_SPACE]:
@@ -95,13 +95,13 @@ while running:
         
 
     #Handles the x axis collisions and stopping movement in that direction
-    if greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bango_x":
+    if greyrect.collision(Vector2(coords.x, coords.y), radius + 10) == "Bango_x":
         coords.x = greyrect.position.x + greyrect.size.x + radius
         if coords.x == greyrect.position.x + greyrect.size.x + radius:
             coords.x += 3
             greyrect.collision(Vector2(coords.x, coords.y), radius) == False
             movingl = False
-    if greyrect.collision(Vector2(coords.x, coords.y), radius) == "Bongo_x":
+    if greyrect.collision(Vector2(coords.x, coords.y), radius + 10) == "Bongo_x":
         coords.x = greyrect.position.x - radius
         if coords.x == greyrect.position.x - radius:
             coords.x -= 3

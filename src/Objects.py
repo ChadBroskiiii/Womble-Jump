@@ -34,9 +34,6 @@ class Blocks:
             if circle_center.y + circle_radius < closest_y:
                 circle_center.y = closest_y - circle_radius - 1
                 return "Bango_y"
-
-            elif circle_center.y + circle_radius + 7 < closest_y + 10:
-                return "Blangus"
             
             elif circle_center.y > closest_y:
                 circle_center.y = closest_y + circle_radius + 1
