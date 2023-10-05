@@ -104,13 +104,13 @@ while running:
             
 
         #Handles the x axis collisions and stopping movement in that direction
-        if platform.collision(Vector2(coords.x, coords.y), radius + 5) == "Bango_x":
+        if platform.collision(Vector2(coords.x, coords.y), radius) == "Bango_x":
             coords.x = platform.position.x + platform.size.x + radius
             if coords.x == platform.position.x + platform.size.x + radius:
                 coords.x += 5
                 collision_result == False
                 movingl = False
-        if platform.collision(Vector2(coords.x, coords.y), radius + 5) == "Bongo_x":
+        if platform.collision(Vector2(coords.x, coords.y), radius) == "Bongo_x":
             coords.x = platform.position.x - radius
             if coords.x == platform.position.x - radius:
                 coords.x -= 5
