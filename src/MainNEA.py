@@ -71,7 +71,7 @@ while running:
         movingr = True
     
         #Detects if colliding with the y value of the blocks and also 
-    #allows the player to jump when on top of the blocks
+    #allows the player to jump when on the blocks
 
     for platform in blocks:
 
