@@ -7,8 +7,8 @@ FPS = 120
 WIDTH = 800
 HEIGHT = 600
 ACCELERATION = 0.25
+MAX_SPEED = 5
 speed = 0
-max_speed = 6
 bg_colour = (0, 0, 0)
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Him")
@@ -83,23 +83,13 @@ while running:
             else:
                 jumpCount = jumpCount
 
-        elif collision_result == "Bango_y":
+        elif collision_result == "Bango_y" and jumpCount < 0:
             jumpCount = 0
             doublejump = 0
             if keys[pygame.K_SPACE]:
                 jump = True
                 jumpCount = jumpMaximum
                 doublejump += 1
-
-        elif collision_result == "Blangus":
-            jump = False
-            coords.y += 0.5*jumpCount
-            doublejump = 0
-            coords.y -= 1
-
-        elif collision_result == False and on_ground == False:
-            jump = True
-            falling = True
             
 
         #Handles the x axis collisions and stopping movement in that direction
@@ -116,18 +106,19 @@ while running:
                 collision_result == False
                 movingr = False
 
-        if collision_result == "Spaghetti_right":
-            coords.x = platform.collisionrect.left - radius
-            if coords.x == platform.collisionrect.left - radius:
-                coords.x -= 3
-                collision_result = False
-                movingr = False
-        if collision_result == "Spaghetti_left":
-            coords.x = platform.collisionrect.right + platform.collisionrect.width + radius
-            if coords.x == platform.collisionrect.right + platform.collisionrect.width + radius:
-                coords.x += 3
-                collision_result = False
+        if collision_result == "Blango_x":
+            coords.x = platform.position.x + platform.size.x + radius - 10
+            if coords.x == platform.position.x + platform.size.x + radius -10:
+                coords.x += 5
+                collision_result == False
                 movingl = False
+        if collision_result == "Blongo_x":
+            coords.x = platform.position.x - radius +10
+            if coords.x == platform.position.x - radius +10:
+                coords.x -= 5
+                collision_result == False
+                movingr = False
+
 
     #The jump calculation for the acceleration and other stuff
     if jump:
@@ -169,10 +160,10 @@ while running:
         speed = 0
 
     #Caps the speed at a certain max speed
-    if speed <= -max_speed:
-        speed = -max_speed
-    elif speed >= max_speed:
-        speed = max_speed
+    if speed <= -MAX_SPEED:
+        speed = -MAX_SPEED
+    elif speed >= MAX_SPEED:
+        speed = MAX_SPEED
     coords.x += speed
 
 
