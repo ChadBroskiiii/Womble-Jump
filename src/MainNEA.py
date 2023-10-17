@@ -116,7 +116,7 @@ while running:
                 collision_result == False
                 movingr = False
 
-        """if collision_result == "Spaghetti_right":
+        if collision_result == "Spaghetti_right":
             coords.x = platform.collisionrect.left - radius
             if coords.x == platform.collisionrect.left - radius:
                 coords.x -= 3
@@ -127,7 +127,7 @@ while running:
             if coords.x == platform.collisionrect.right + platform.collisionrect.width + radius:
                 coords.x += 3
                 collision_result = False
-                movingl = False"""
+                movingl = False
 
     #The jump calculation for the acceleration and other stuff
     if jump:

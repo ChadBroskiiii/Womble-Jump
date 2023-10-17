@@ -56,13 +56,13 @@ class Blocks:
             if circle_center.y <= self.collisionrect.y:
                 return "Bango_y"
         
-            """if circle_center.x == self.collisionrect.left:
+            if circle_center.x == self.collisionrect.left:
                 circle_center.x = closest_x_top - circle_radius - 1
                 return "Spaghetti_left"
 
             if circle_center.x == self.collisionrect.right:
                 circle_center.x += circle_radius
-                return "Spaghetti_right"""
+                return "Spaghetti_right"
         
             
         return False
