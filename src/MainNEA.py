@@ -11,19 +11,14 @@ class Player:
         self.jumpMaximum = 10
         self.speed = 0
         self.doublejump = 0
+        self.tempdouble = self.doublejump
         self.maxjumpscount = 2
         self.on_ground = True
         self.falling = False
+        self.spacepressed = False
         self.circle_hbox = pygame.Rect(self.coords.x - self.radius, self.coords.y + self.radius, self.radius * 2 + 1,
-                                       self.radius * 2 + 1)
+                                       self.radius * 2 + 1)             
 
-    def handle_input(self, keys):
-        if keys[pygame.K_SPACE]:
-            if self.doublejump < self.maxjumpscount:
-                self.jump = True
-                self.jumpCount = self.jumpMaximum
-                self.doublejump += 1
-                self.falling = True
 
     def update_position(self, movingl, movingr, keys, platforms):
         if self.coords.x <= 0 + self.radius:
@@ -44,7 +39,6 @@ class Player:
         for platform in platforms:
 
             collision_result = platform.collision(Vector2(self.coords.x, self.coords.y), self.radius)
-
             if collision_result == "Bongo_y":
                 if self.jumpCount >= -6:
                     self.jumpCount = -2
@@ -175,15 +169,30 @@ class Game:
         self.movingr = True
         self.running = True
 
+
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.player.spacepressed = True
+                    if self.player.doublejump < self.player.maxjumpscount:
+                        self.player.jump = True
+                        self.player.jumpCount = self.player.jumpMaximum
+                        self.player.falling = True
+                        self.player.doublejump += 1
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_SPACE:
+                    self.player.spacepressed == False
+            if event.type == pygame.QUIT:
+                self.running = False
+
+
     def run(self):
         while self.running:
             pygame.time.delay(0)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
 
             keys = pygame.key.get_pressed()
-            self.player.handle_input(keys)
+            self.handle_events()
             self.player.update_position(self.movingl, self.movingr, keys, game.platform)
             self.player.handle_jump()
             self.player.check_floor_collision(self.screen_height)
