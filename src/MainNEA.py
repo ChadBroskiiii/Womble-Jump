@@ -48,37 +48,36 @@ class Player:
             elif collision_result == "Bango_y" and self.jumpCount < 0:
                 self.jumpCount = 0
                 self.doublejump = 0
+                self.jump = False
                 if keys[pygame.K_SPACE]:
                     self.jump = True
                     self.jumpCount = self.jumpMaximum
                     self.doublejump += 1
-                
 
+            if collision_result == False and self.coords.y >= platform.position.y:
+                self.jump = True
+                
             #Handles the x axis collisions and stopping movement in that direction
             if collision_result == "Bango_x":
                 self.coords.x = platform.position.x + platform.size.x + self.radius
                 if self.coords.x == platform.position.x + platform.size.x + self.radius:
-                    self.coords.x += 5
-                    collision_result == False
                     movingl = False
+                    
             if collision_result == "Bongo_x":
                 self.coords.x = platform.position.x - self.radius
                 if self.coords.x == platform.position.x - self.radius:
-                    self.coords.x -= 5
-                    collision_result == False
                     movingr = False
 
             if collision_result == "Blango_x":
                 self.coords.x = platform.position.x + platform.size.x + self.radius - 10
                 if self.coords.x == platform.position.x + platform.size.x + self.radius -10:
                     self.coords.x += 5
-                    collision_result == False
                     movingl = False
+
             if collision_result == "Blongo_x":
                 self.coords.x = platform.position.x - self.radius +10
                 if self.coords.x == platform.position.x - self.radius +10:
                     self.coords.x -= 5
-                    collision_result == False
                     movingr = False
 
 
