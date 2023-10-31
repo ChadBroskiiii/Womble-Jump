@@ -4,6 +4,8 @@ from Objects import Blocks  # Assuming you have the Blocks class in a separate m
 
 class Player:
     def __init__(self, screen_width, screen_height):
+        self.movingl = True
+        self.movingr = True
         self.radius = 10
         self.coords = Vector2(screen_width / 2, screen_height - 20)
         self.jump = False
@@ -30,8 +32,8 @@ class Player:
             self.speed = 0
             self.coords.x = game.screen_width - self.radius
         else:
-            movingl = True
-            movingr = True
+            self.movingl = True
+            self.movingr = True
         
             #Detects if colliding with the y value of the blocks and also 
         #allows the player to jump when on the blocks
@@ -54,32 +56,43 @@ class Player:
                     self.jumpCount = self.jumpMaximum
                     self.doublejump += 1
 
-            if collision_result == False and self.coords.y >= platform.position.y:
+            if collision_result == False and self.on_ground == False:
                 self.jump = True
                 
             #Handles the x axis collisions and stopping movement in that direction
             if collision_result == "Bango_x":
-                self.coords.x = platform.position.x + platform.size.x + self.radius
-                if self.coords.x == platform.position.x + platform.size.x + self.radius:
-                    movingl = False
+                self.movingl = False
+                self.movingr = True
+                self.coords.x = platform.position.x + platform.size.x + self.radius + 3
+            # elif collision_result == False:
+            #     self.movingl = True
+                # if self.coords.x == platform.position.x + platform.size.x + self.radius:
+                #     self.coords.x += 3
+                #     self.movingl = False
                     
             if collision_result == "Bongo_x":
-                self.coords.x = platform.position.x - self.radius
-                if self.coords.x == platform.position.x - self.radius:
-                    movingr = False
+                self.movingl = True
+                self.movingr = False
+                self.coords.x = platform.position.x - self.radius - 4
+            # elif collision_result == False:
+            #     self.movingr = True
+                # if self.coords.x == platform.position.x - self.radius:
+                #     self.coords.x -= 3
+                #     self.movingr = False
 
             if collision_result == "Blango_x":
                 self.coords.x = platform.position.x + platform.size.x + self.radius - 10
                 if self.coords.x == platform.position.x + platform.size.x + self.radius -10:
                     self.coords.x += 5
-                    movingl = False
+                    self.movingl = False
 
             if collision_result == "Blongo_x":
                 self.coords.x = platform.position.x - self.radius +10
                 if self.coords.x == platform.position.x - self.radius +10:
                     self.coords.x -= 5
-                    movingr = False
+                    self.movingr = False
 
+            print(collision_result)
 
         #The jump calculation for the acceleration and other stuff
         if self.jump:
@@ -102,7 +115,7 @@ class Player:
             self.falling = False
             
         #Controls the left and right movement with acceleration and deceleration
-        if movingl == True:
+        if self.movingl == True:
             if keys[pygame.K_LEFT]:
                 self.speed -= game.ACCELERATION
             else:
@@ -111,7 +124,7 @@ class Player:
         else:
             self.speed = 0
 
-        if movingr == True:
+        if self.movingr == True:
             if keys[pygame.K_RIGHT]:
                 self.speed += game.ACCELERATION
             else:
@@ -126,6 +139,7 @@ class Player:
         elif self.speed >= game.MAX_SPEED:
             self.speed = game.MAX_SPEED
         self.coords.x += self.speed
+
 
     def handle_jump(self):
         if self.jump:
@@ -159,7 +173,7 @@ class Game:
         pygame.display.set_caption("Him")
         self.clock = pygame.time.Clock()
         self.platform = [
-            Blocks(self.window, (200, 200, 200), (self.screen_width / 3, self.screen_height / 1.5), (100, 100), ()),
+            Blocks(self.window, (200, 200, 200), (self.screen_width / 3, self.screen_height / 1.5), (100, 500), ()),
             Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 250), (150, 50), ())
         ]
 

@@ -44,7 +44,7 @@ class Blocks:
                 #circle_center.x = closest_x - circle_radius - 1
                 return "Bango_x"
             
-            if circle_center.x < self.position.x + self.size.x - 2:
+            if circle_center.x < self.position.x + self.size.x + 2:
                 #circle_center.x += circle_radius
                 return "Bongo_x"
         
