@@ -4,6 +4,9 @@ from Objects import Blocks  # Assuming you have the Blocks class in a separate m
 
 class Player:
     def __init__(self, screen_width, screen_height):
+        self.screen_width = 800
+        self.screen_height = 600
+        self.window = pygame.display.set_mode((self.screen_width, self.screen_height))
         self.movingl = True
         self.movingr = True
         self.radius = 10
@@ -19,10 +22,18 @@ class Player:
         self.falling = False
         self.spacepressed = False
         self.circle_hbox = pygame.Rect(self.coords.x - self.radius, self.coords.y + self.radius, self.radius * 2 + 1,
-                                       self.radius * 2 + 1)             
+                                       self.radius * 2 + 1)
+        self.platforms = [
+            Blocks(self.window, (200, 200, 200), (self.screen_width / 3, self.screen_height / 1.5), (100, 500), ()),
+            Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 250), (150, 50), ())
+        ]            
 
 
-    def update_position(self, movingl, movingr, keys, platforms):
+    def update_position(self, keys, platforms):
+
+        for platform in game.platforms:
+            collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, self.platforms)
+            
         if self.coords.x <= 0 + self.radius:
             #movingl = False
             self.speed = 0
@@ -37,62 +48,6 @@ class Player:
         
             #Detects if colliding with the y value of the blocks and also 
         #allows the player to jump when on the blocks
-
-        for platform in platforms:
-
-            collision_result = platform.collision(Vector2(self.coords.x, self.coords.y), self.radius)
-            if collision_result == "Bongo_y":
-                if self.jumpCount >= -6:
-                    self.jumpCount = -2
-                else:
-                    self.jumpCount = self.jumpCount
-
-            elif collision_result == "Bango_y" and self.jumpCount < 0:
-                self.jumpCount = 0
-                self.doublejump = 0
-                self.jump = False
-                if keys[pygame.K_SPACE]:
-                    self.jump = True
-                    self.jumpCount = self.jumpMaximum
-                    self.doublejump += 1
-
-            if collision_result == False and self.on_ground == False:
-                self.jump = True
-                
-            #Handles the x axis collisions and stopping movement in that direction
-            if collision_result == "Bango_x":
-                self.movingl = False
-                self.movingr = True
-                self.coords.x = platform.position.x + platform.size.x + self.radius + 3
-            # elif collision_result == False:
-            #     self.movingl = True
-                # if self.coords.x == platform.position.x + platform.size.x + self.radius:
-                #     self.coords.x += 3
-                #     self.movingl = False
-                    
-            if collision_result == "Bongo_x":
-                self.movingl = True
-                self.movingr = False
-                self.coords.x = platform.position.x - self.radius - 4
-            # elif collision_result == False:
-            #     self.movingr = True
-                # if self.coords.x == platform.position.x - self.radius:
-                #     self.coords.x -= 3
-                #     self.movingr = False
-
-            if collision_result == "Blango_x":
-                self.coords.x = platform.position.x + platform.size.x + self.radius - 10
-                if self.coords.x == platform.position.x + platform.size.x + self.radius -10:
-                    self.coords.x += 5
-                    self.movingl = False
-
-            if collision_result == "Blongo_x":
-                self.coords.x = platform.position.x - self.radius +10
-                if self.coords.x == platform.position.x - self.radius +10:
-                    self.coords.x -= 5
-                    self.movingr = False
-
-            print(collision_result)
 
         #The jump calculation for the acceleration and other stuff
         if self.jump:
@@ -115,23 +70,33 @@ class Player:
             self.falling = False
             
         #Controls the left and right movement with acceleration and deceleration
-        if self.movingl == True:
+        
+        if collisionresult == False:
+
             if keys[pygame.K_LEFT]:
+                #self.speed -= tempacc
                 self.speed -= game.ACCELERATION
             else:
                 if self.speed < 0:
                     self.speed += game.ACCELERATION
-        else:
-            self.speed = 0
 
-        if self.movingr == True:
             if keys[pygame.K_RIGHT]:
+                #self.speed += tempacc
                 self.speed += game.ACCELERATION
             else:
                 if self.speed > 0:
                     self.speed -= game.ACCELERATION
+        
         else:
+            
+            if self.coords.x < platform.position.x + platform.size.x/2:
+                print("right")
+                self.coords.x += 1
+            if self.coords.x > platform.position.x + platform.size.x/2:
+                print("left")
+                self.coords.x -= 1
             self.speed = 0
+        #CHANGE IT SO THAT YOU REVERT AND CHECK FOR COLLISION IN THE MOVEMENT PART SO THAT YOU DONT HAVE TO CHECK LEFT AND RIGHT
 
         #Caps the speed at a certain max speed
         if self.speed <= -game.MAX_SPEED:
@@ -140,6 +105,10 @@ class Player:
             self.speed = game.MAX_SPEED
         self.coords.x += self.speed
 
+
+
+
+            #print(collision_result)
 
     def handle_jump(self):
         if self.jump:
@@ -172,7 +141,7 @@ class Game:
         self.window = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Him")
         self.clock = pygame.time.Clock()
-        self.platform = [
+        self.platforms = [
             Blocks(self.window, (200, 200, 200), (self.screen_width / 3, self.screen_height / 1.5), (100, 500), ()),
             Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 250), (150, 50), ())
         ]
@@ -206,12 +175,12 @@ class Game:
 
             keys = pygame.key.get_pressed()
             self.handle_events()
-            self.player.update_position(self.movingl, self.movingr, keys, game.platform)
+            self.player.update_position(keys, game.platforms)
             self.player.handle_jump()
             self.player.check_floor_collision(self.screen_height)
 
             self.window.fill(self.bg_colour)
-            for platform in game.platform:
+            for platform in self.platforms:
                 platform.draw()
 
             circle = pygame.draw.circle(self.window, (255, 0, 0), (int(self.player.coords.x), int(self.player.coords.y)),
