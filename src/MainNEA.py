@@ -33,6 +33,8 @@ class Player:
 
         for platform in game.platforms:
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, self.platforms)
+            if collisionresult:
+                break
             
         if self.coords.x <= 0 + self.radius:
             #movingl = False
@@ -70,9 +72,7 @@ class Player:
             self.falling = False
             
         #Controls the left and right movement with acceleration and deceleration
-        
         if collisionresult == False:
-
             if keys[pygame.K_LEFT]:
                 #self.speed -= tempacc
                 self.speed -= game.ACCELERATION
@@ -87,16 +87,21 @@ class Player:
                 if self.speed > 0:
                     self.speed -= game.ACCELERATION
         
+        #Reverts movement after a collision
         else:
-            
-            if self.coords.x < platform.position.x + platform.size.x/2:
+            print(collisionresult)
+            if self.speed < 0:
                 print("right")
-                self.coords.x += 1
-            if self.coords.x > platform.position.x + platform.size.x/2:
+                self.speed = -0.25
+                self.coords.x -= self.speed -1
+                self.coords.x += 0.25
+
+            if self.speed > 0:
                 print("left")
-                self.coords.x -= 1
-            self.speed = 0
-        #CHANGE IT SO THAT YOU REVERT AND CHECK FOR COLLISION IN THE MOVEMENT PART SO THAT YOU DONT HAVE TO CHECK LEFT AND RIGHT
+                self.speed = 0.25
+                self.coords.x -= self.speed +1
+                self.coords.x -= 0.25
+
 
         #Caps the speed at a certain max speed
         if self.speed <= -game.MAX_SPEED:
@@ -104,8 +109,6 @@ class Player:
         elif self.speed >= game.MAX_SPEED:
             self.speed = game.MAX_SPEED
         self.coords.x += self.speed
-
-
 
 
             #print(collision_result)
@@ -175,7 +178,7 @@ class Game:
 
             keys = pygame.key.get_pressed()
             self.handle_events()
-            self.player.update_position(keys, game.platforms)
+            self.player.update_position(keys, self.platforms)
             self.player.handle_jump()
             self.player.check_floor_collision(self.screen_height)
 
