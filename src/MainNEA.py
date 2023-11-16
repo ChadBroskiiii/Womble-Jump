@@ -17,7 +17,7 @@ class Player:
         self.speed = 0
         self.doublejump = 0
         self.tempdouble = self.doublejump
-        self.maxjumpscount = 2
+        self.maxjumpscount = 50
         self.on_ground = True
         self.falling = False
         self.spacepressed = False
@@ -31,11 +31,46 @@ class Player:
 
     def update_position(self, keys, platforms):
 
-        for platform in game.platforms:
-            collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, self.platforms)
-            if collisionresult:
-                break
+        for platform in platforms:
+            collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platforms)
             
+            
+        #Controls the left and right movement with acceleration and deceleration
+            if collisionresult == False:
+                if keys[pygame.K_LEFT]:
+                    #self.speed -= tempacc
+                    self.speed -= game.ACCELERATION
+                else:
+                    if self.speed < 0:
+                        self.speed += game.ACCELERATION
+
+                if keys[pygame.K_RIGHT]:
+                    #self.speed += tempacc
+                    self.speed += game.ACCELERATION
+                else:
+                    if self.speed > 0:
+                        self.speed -= game.ACCELERATION
+            
+            #Reverts movement after a collision
+            else:
+                if self.speed < 0:
+                    self.speed = -0.25
+                    self.coords.x -= self.speed -1
+                    self.coords.x += 0.25
+
+                if self.speed > 0:
+                    self.speed = 0.25
+                    self.coords.x -= self.speed +1
+                    self.coords.x -= 0.25
+
+            print(collisionresult)
+        #Caps the speed at a certain max speed
+        if self.speed <= -game.MAX_SPEED:
+            self.speed = -game.MAX_SPEED
+        elif self.speed >= game.MAX_SPEED:
+            self.speed = game.MAX_SPEED
+        self.coords.x += self.speed
+
         if self.coords.x <= 0 + self.radius:
             #movingl = False
             self.speed = 0
@@ -70,47 +105,6 @@ class Player:
             self.doublejump = 0
             self.on_ground = True
             self.falling = False
-            
-        #Controls the left and right movement with acceleration and deceleration
-        if collisionresult == False:
-            if keys[pygame.K_LEFT]:
-                #self.speed -= tempacc
-                self.speed -= game.ACCELERATION
-            else:
-                if self.speed < 0:
-                    self.speed += game.ACCELERATION
-
-            if keys[pygame.K_RIGHT]:
-                #self.speed += tempacc
-                self.speed += game.ACCELERATION
-            else:
-                if self.speed > 0:
-                    self.speed -= game.ACCELERATION
-        
-        #Reverts movement after a collision
-        else:
-            print(collisionresult)
-            if self.speed < 0:
-                print("right")
-                self.speed = -0.25
-                self.coords.x -= self.speed -1
-                self.coords.x += 0.25
-
-            if self.speed > 0:
-                print("left")
-                self.speed = 0.25
-                self.coords.x -= self.speed +1
-                self.coords.x -= 0.25
-
-
-        #Caps the speed at a certain max speed
-        if self.speed <= -game.MAX_SPEED:
-            self.speed = -game.MAX_SPEED
-        elif self.speed >= game.MAX_SPEED:
-            self.speed = game.MAX_SPEED
-        self.coords.x += self.speed
-
-
             #print(collision_result)
 
     def handle_jump(self):
@@ -146,7 +140,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.platforms = [
             Blocks(self.window, (200, 200, 200), (self.screen_width / 3, self.screen_height / 1.5), (100, 500), ()),
-            Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 250), (150, 50), ())
+            Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 250), (150, 500), ())
         ]
 
         self.player = Player(self.screen_width, self.screen_height)
