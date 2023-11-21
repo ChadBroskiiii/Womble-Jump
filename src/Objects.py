@@ -24,14 +24,12 @@ class Blocks:
         pygame.draw.polygon(self.surface, (125,125,125), trapezium_coords)
 
 
-    def collision(self, coordsx, coordsy, radius, platforms):
+    def collision(self, coordsx, coordsy, radius, platform):
         hitbox = pygame.rect.Rect(coordsx - radius, coordsy - radius, radius*2, radius*2)
         topresult = pygame.Rect.colliderect(hitbox, self.collisionrect)
         center = Vector2(coordsx + radius, coordsy + radius)
 
         closest_y = (self.position.y - min(center.y, self.position.y + self.size.y))
         
-        #print(f"result: {result}, closest_x: {closest_x}, self.position.x: {self.position.x}, self.size.x: {self.size.x}")
-        for platform in platforms:
-            result = pygame.Rect.colliderect(hitbox, platform)
-            return result
+        result = pygame.Rect.colliderect(hitbox, platform)
+        return result

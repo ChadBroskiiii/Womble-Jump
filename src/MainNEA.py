@@ -25,27 +25,25 @@ class Player:
                                        self.radius * 2 + 1)
         self.platforms = [
             Blocks(self.window, (200, 200, 200), (self.screen_width / 3, self.screen_height / 1.5), (100, 500), ()),
-            Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 250), (150, 50), ())
+            Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 50), (150, 50), ())
         ]            
 
 
     def update_position(self, keys, platforms):
 
         for platform in platforms:
-            collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platforms)
+            collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
             
             
         #Controls the left and right movement with acceleration and deceleration
             if collisionresult == False:
                 if keys[pygame.K_LEFT]:
-                    #self.speed -= tempacc
                     self.speed -= game.ACCELERATION
                 else:
                     if self.speed < 0:
                         self.speed += game.ACCELERATION
 
                 if keys[pygame.K_RIGHT]:
-                    #self.speed += tempacc
                     self.speed += game.ACCELERATION
                 else:
                     if self.speed > 0:
@@ -72,18 +70,16 @@ class Player:
         self.coords.x += self.speed
 
         if self.coords.x <= 0 + self.radius:
-            #movingl = False
             self.speed = 0
             self.coords.x = 0 + self.radius
         elif self.coords.x >= game.screen_width - self.radius:
-            #movingr = False
             self.speed = 0
             self.coords.x = game.screen_width - self.radius
         else:
             self.movingl = True
             self.movingr = True
         
-            #Detects if colliding with the y value of the blocks and also 
+        #Detects if colliding with the y value of the blocks and also 
         #allows the player to jump when on the blocks
 
         #The jump calculation for the acceleration and other stuff
@@ -105,7 +101,6 @@ class Player:
             self.doublejump = 0
             self.on_ground = True
             self.falling = False
-            #print(collision_result)
 
     def handle_jump(self):
         if self.jump:
