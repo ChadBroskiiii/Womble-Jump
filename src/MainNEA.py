@@ -28,11 +28,13 @@ class Player:
             Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 50), (150, 50), ())
         ]            
 
-
     def update_position(self, keys, platforms):
+        
 
         for platform in platforms:
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
+            prev_x_pos_l = self.coords.x - self.speed
+            prev_x_pos_r = self.coords.x + self.speed
             
             
         #Controls the left and right movement with acceleration and deceleration
@@ -50,17 +52,17 @@ class Player:
                         self.speed -= game.ACCELERATION
             
             #Reverts movement after a collision
-            else:
+            elif collisionresult == "side_coll":
                 if self.speed < 0:
-                    self.speed = -0.25
-                    self.coords.x -= self.speed -1
-                    self.coords.x += 0.25
+                    self.speed = 0
+                    self.coords.x = prev_x_pos_l
+                   # self.coords.x += 0.25
 
                 if self.speed > 0:
-                    self.speed = 0.25
-                    self.coords.x -= self.speed +1
-                    self.coords.x -= 0.25
-
+                    self.speed = 0
+                    self.coords.x = prev_x_pos_l
+                   # self.coords.x -= 0.25
+                
             print(collisionresult)
         #Caps the speed at a certain max speed
         if self.speed <= -game.MAX_SPEED:
@@ -81,8 +83,6 @@ class Player:
         
         #Detects if colliding with the y value of the blocks and also 
         #allows the player to jump when on the blocks
-
-        #The jump calculation for the acceleration and other stuff
         if self.jump:
             self.on_ground = False
             self.coords.y -= 0.4*self.jumpCount
@@ -93,6 +93,15 @@ class Player:
                     self.jumpCount -= 0.2
                 else:
                     self.jump = True
+        #The jump calculation for the acceleration and other stuff
+        for platform in platforms:
+            collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
+
+            
+            
+            if collisionresult == "top_coll":
+                self.jump = False
+
         
         #Makes sure the player doesn't fall through the bottom of the window
         #And resets the double jump count when the player touches the floor

@@ -32,4 +32,11 @@ class Blocks:
         closest_y = (self.position.y - min(center.y, self.position.y + self.size.y))
         
         result = pygame.Rect.colliderect(hitbox, platform)
-        return result
+        
+        if result == True:
+            return "side_coll"
+        
+        if topresult == True:
+            return "top_coll"
+        
+        return False
