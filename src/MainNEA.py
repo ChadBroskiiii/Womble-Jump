@@ -31,8 +31,7 @@ class Player:
         #Iterates through each platform and checks for collisions individually
         for platform in platforms:
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
-            prev_x_pos_l = self.coords.x - self.speed
-            prev_x_pos_r = self.coords.x + self.speed
+            prev_x_pos = self.coords.x - self.speed
             
             #Controls the left and right movement with acceleration and deceleration
             if collisionresult == False:
@@ -52,17 +51,17 @@ class Player:
             elif collisionresult == "side_coll":
                 if self.speed < 0:
                     self.speed = 0
-                    self.coords.x = prev_x_pos_l
+                    self.coords.x = prev_x_pos - 1
 
                 if self.speed > 0:
                     self.speed = 0
-                    self.coords.x = prev_x_pos_l
+                    self.coords.x = prev_x_pos - 1
                 
                 if self.speed == 0:
-                    if self.coords.x < prev_x_pos_l:
-                        self.coords.x = prev_x_pos_l
-                    elif self.coords.x > prev_x_pos_l:
-                        self.coords.x = prev_x_pos_r
+                    if self.coords.x < prev_x_pos:
+                        self.coords.x = prev_x_pos
+                    elif self.coords.x > prev_x_pos:
+                        self.coords.x = prev_x_pos
                 
             print(collisionresult)
         #Caps the speed at a certain max speed
@@ -100,6 +99,10 @@ class Player:
 
             if collisionresult == "top_coll":
                 self.jump = False
+                self.coords.y = platform.get_position_y() - 10
+                self.jumpCount = 0
+            else:
+                self.jump = True
 
         #Makes sure the player doesn't fall through the bottom of the window
         #And resets the double jump count when the player touches the floor

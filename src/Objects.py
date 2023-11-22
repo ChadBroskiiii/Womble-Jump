@@ -39,3 +39,9 @@ class Blocks:
             return "top_coll"
 
         return False
+
+    def get_position_y(self):
+        return self.position.y - 17
+    
+    def get_size_y(self):
+        return self.size.y
