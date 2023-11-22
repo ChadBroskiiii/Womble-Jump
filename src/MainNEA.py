@@ -3,7 +3,7 @@ from pygame import Vector2
 from Objects import Blocks  # Assuming you have the Blocks class in a separate module
 
 class Player:
-    def __init__(self, screen_width, screen_height):
+    def __init__(self, screen_width, screen_height, platforms):
         #Initialisation variables
         self.screen_width = 800
         self.screen_height = 600
@@ -24,11 +24,7 @@ class Player:
         self.spacepressed = False
         self.circle_hbox = pygame.Rect(self.coords.x - self.radius, self.coords.y + self.radius, self.radius * 2 + 1,
                                        self.radius * 2 + 1)
-        #List with all the playforms in the game at that moment
-        self.platforms = [
-            Blocks(self.window, (200, 200, 200), (self.screen_width / 3, self.screen_height / 1.5), (100, 500), ()),
-            Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 50), (150, 50), ())
-        ]            
+        self.platforms = platforms
 
     def update_position(self, keys, platforms):
         
@@ -36,6 +32,7 @@ class Player:
         for platform in platforms:
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
             prev_x_pos_l = self.coords.x - self.speed
+            prev_x_pos_r = self.coords.x + self.speed
             
             #Controls the left and right movement with acceleration and deceleration
             if collisionresult == False:
@@ -50,7 +47,7 @@ class Player:
                 else:
                     if self.speed > 0:
                         self.speed -= game.ACCELERATION
-            
+                
             #Reverts movement after a collision
             elif collisionresult == "side_coll":
                 if self.speed < 0:
@@ -60,6 +57,12 @@ class Player:
                 if self.speed > 0:
                     self.speed = 0
                     self.coords.x = prev_x_pos_l
+                
+                if self.speed == 0:
+                    if self.coords.x < prev_x_pos_l:
+                        self.coords.x = prev_x_pos_l
+                    elif self.coords.x > prev_x_pos_l:
+                        self.coords.x = prev_x_pos_r
                 
             print(collisionresult)
         #Caps the speed at a certain max speed
@@ -115,6 +118,7 @@ class Player:
 
 class Game:
     def __init__(self):
+        #Pygame and variable initialisation
         pygame.init()
         self.FPS = 120
         self.screen_width = 800
@@ -126,12 +130,13 @@ class Game:
         self.window = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Him")
         self.clock = pygame.time.Clock()
+        #List with all the playforms in the game at that moment
         self.platforms = [
             Blocks(self.window, (200, 200, 200), (self.screen_width / 3, self.screen_height / 1.5), (100, 500), ()),
             Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 250), (150, 500), ())
         ]
 
-        self.player = Player(self.screen_width, self.screen_height)
+        self.player = Player(self.screen_width, self.screen_height, self.platforms)
         self.movingl = True
         self.movingr = True
         self.running = True
@@ -161,7 +166,6 @@ class Game:
             keys = pygame.key.get_pressed()
             self.handle_events()
             self.player.update_position(keys, self.platforms)
-            #self.player.handle_jump()
             self.player.check_floor_collision(self.screen_height)
 
             self.window.fill(self.bg_colour)
@@ -174,6 +178,12 @@ class Game:
 
             self.clock.tick(self.FPS)
             pygame.display.flip()
+
+#Passes the platforms list from the Game class to the Player class
+gameinstance = Game()
+playerinstance = Player(800, 600, gameinstance.platforms)
+playerinstance.platforms = gameinstance.platforms
+
 
 if __name__ == "__main__":
     game = Game()

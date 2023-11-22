@@ -1,8 +1,8 @@
 import pygame
 from pygame import Vector2
 
-class Blocks:
 
+class Blocks:
     def __init__(self, surface, color, position, size, rect):
         self.surface = surface
         self.color = color
@@ -21,22 +21,21 @@ class Blocks:
         bottomright = Vector2((self.position.x + self.size.x), (self.position.y))
         topright = Vector2((self.position.x + self.size.x - widthdiff), (self.position.y - height))
         trapezium_coords = [topleft, bottomleft, bottomright, topright]
-        pygame.draw.polygon(self.surface, (125,125,125), trapezium_coords)
-
+        pygame.draw.polygon(self.surface, (125, 125, 125), trapezium_coords)
 
     def collision(self, coordsx, coordsy, radius, platform):
-        hitbox = pygame.rect.Rect(coordsx - radius, coordsy - radius, radius*2, radius*2)
+        hitbox = pygame.rect.Rect(coordsx - radius, coordsy - radius, radius * 2, radius * 2)
         topresult = pygame.Rect.colliderect(hitbox, self.collisionrect)
         center = Vector2(coordsx + radius, coordsy + radius)
 
-        closest_y = (self.position.y - min(center.y, self.position.y + self.size.y))
-        
+        closest_y = self.position.y - min(center.y, self.position.y + self.size.y)
+
         result = pygame.Rect.colliderect(hitbox, platform)
-        
+
         if result == True:
             return "side_coll"
-        
+
         if topresult == True:
             return "top_coll"
-        
+
         return False
