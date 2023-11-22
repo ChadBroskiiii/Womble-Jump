@@ -4,6 +4,7 @@ from Objects import Blocks  # Assuming you have the Blocks class in a separate m
 
 class Player:
     def __init__(self, screen_width, screen_height):
+        #Initialisation variables
         self.screen_width = 800
         self.screen_height = 600
         self.window = pygame.display.set_mode((self.screen_width, self.screen_height))
@@ -23,6 +24,7 @@ class Player:
         self.spacepressed = False
         self.circle_hbox = pygame.Rect(self.coords.x - self.radius, self.coords.y + self.radius, self.radius * 2 + 1,
                                        self.radius * 2 + 1)
+        #List with all the playforms in the game at that moment
         self.platforms = [
             Blocks(self.window, (200, 200, 200), (self.screen_width / 3, self.screen_height / 1.5), (100, 500), ()),
             Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 50), (150, 50), ())
@@ -30,14 +32,12 @@ class Player:
 
     def update_position(self, keys, platforms):
         
-
+        #Iterates through each platform and checks for collisions individually
         for platform in platforms:
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
             prev_x_pos_l = self.coords.x - self.speed
-            prev_x_pos_r = self.coords.x + self.speed
             
-            
-        #Controls the left and right movement with acceleration and deceleration
+            #Controls the left and right movement with acceleration and deceleration
             if collisionresult == False:
                 if keys[pygame.K_LEFT]:
                     self.speed -= game.ACCELERATION
@@ -56,12 +56,10 @@ class Player:
                 if self.speed < 0:
                     self.speed = 0
                     self.coords.x = prev_x_pos_l
-                   # self.coords.x += 0.25
 
                 if self.speed > 0:
                     self.speed = 0
                     self.coords.x = prev_x_pos_l
-                   # self.coords.x -= 0.25
                 
             print(collisionresult)
         #Caps the speed at a certain max speed
@@ -81,28 +79,25 @@ class Player:
             self.movingl = True
             self.movingr = True
         
-        #Detects if colliding with the y value of the blocks and also 
-        #allows the player to jump when on the blocks
+        #Jump calculations with acceleration
         if self.jump:
             self.on_ground = False
-            self.coords.y -= 0.4*self.jumpCount
+            self.coords.y -= 0.8*self.jumpCount
             if self.jumpCount == -6:
                 self.falling = True
             if self.falling:
                 if self.jumpCount > -self.jumpMaximum:
-                    self.jumpCount -= 0.2
+                    self.jumpCount -= 0.3
                 else:
                     self.jump = True
-        #The jump calculation for the acceleration and other stuff
+
+        #Checks for top collisions and stops the player
         for platform in platforms:
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
 
-            
-            
             if collisionresult == "top_coll":
                 self.jump = False
 
-        
         #Makes sure the player doesn't fall through the bottom of the window
         #And resets the double jump count when the player touches the floor
         if self.coords.y >= (game.screen_height-2*self.radius):
@@ -110,17 +105,6 @@ class Player:
             self.doublejump = 0
             self.on_ground = True
             self.falling = False
-
-    def handle_jump(self):
-        if self.jump:
-            self.on_ground = False
-            self.coords.y -= 0.4 * self.jumpCount
-            if self.jumpCount == -6:
-                self.falling = True
-            if self.falling and self.jumpCount > -self.jumpMaximum:
-                self.jumpCount -= 0.1
-            else:
-                self.jump = True
 
     def check_floor_collision(self, screen_height):
         if self.coords.y >= (screen_height - 2 * self.radius):
@@ -177,7 +161,7 @@ class Game:
             keys = pygame.key.get_pressed()
             self.handle_events()
             self.player.update_position(keys, self.platforms)
-            self.player.handle_jump()
+            #self.player.handle_jump()
             self.player.check_floor_collision(self.screen_height)
 
             self.window.fill(self.bg_colour)
