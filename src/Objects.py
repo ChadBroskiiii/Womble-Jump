@@ -25,11 +25,10 @@ class Blocks:
 
     def collision(self, coordsx, coordsy, radius, platform):
         hitbox = pygame.rect.Rect(coordsx - radius, coordsy - radius, radius * 2, radius * 2)
-        topresult = pygame.Rect.colliderect(hitbox, self.collisionrect)
         center = Vector2(coordsx + radius, coordsy + radius)
-
         closest_y = self.position.y - min(center.y, self.position.y + self.size.y)
 
+        topresult = pygame.Rect.colliderect(hitbox, self.collisionrect)
         result = pygame.Rect.colliderect(hitbox, platform)
 
         if result == True:
@@ -43,5 +42,11 @@ class Blocks:
     def get_position_y(self):
         return self.position.y - 17
     
+    def get_position_x(self):
+        return self.position.x
+    
     def get_size_y(self):
         return self.size.y
+    
+    def get_size_x(self):
+        return self.size.x

@@ -27,9 +27,9 @@ class Player:
         self.platforms = platforms
 
     def update_position(self, keys, platforms):
-        
         #Iterates through each platform and checks for collisions individually
         for platform in platforms:
+            midpoint = platform.get_position_x() + platform.get_size_x()/2
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
             prev_x_pos = self.coords.x - self.speed
             
@@ -48,20 +48,13 @@ class Player:
                         self.speed -= game.ACCELERATION
                 
             #Reverts movement after a collision
-            elif collisionresult == "side_coll":
-                if self.speed < 0:
+            elif collisionresult == "side_coll":               
+                if midpoint > self.coords.x:
                     self.speed = 0
-                    self.coords.x = prev_x_pos - 1
-
-                if self.speed > 0:
+                    self.coords.x -= 0.75
+                elif midpoint < self.coords.x:
                     self.speed = 0
-                    self.coords.x = prev_x_pos - 1
-                
-                if self.speed == 0:
-                    if self.coords.x < prev_x_pos:
-                        self.coords.x = prev_x_pos
-                    elif self.coords.x > prev_x_pos:
-                        self.coords.x = prev_x_pos
+                    self.coords.x += 0.75
                 
             print(collisionresult)
         #Caps the speed at a certain max speed
@@ -98,9 +91,12 @@ class Player:
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
 
             if collisionresult == "top_coll":
-                self.jump = False
-                self.coords.y = platform.get_position_y() - 10
-                self.jumpCount = 0
+                if self.jumpCount < 0:
+                    self.jump = False
+                    self.coords.y = platform.get_position_y() - 10
+                    self.jumpCount = 0
+                else:
+                    self.jump = True
             else:
                 self.jump = True
 
@@ -136,7 +132,7 @@ class Game:
         #List with all the playforms in the game at that moment
         self.platforms = [
             Blocks(self.window, (200, 200, 200), (self.screen_width / 3, self.screen_height / 1.5), (100, 500), ()),
-            Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 250), (150, 500), ())
+            Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 250), (150, 50), ())
         ]
 
         self.player = Player(self.screen_width, self.screen_height, self.platforms)
