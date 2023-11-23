@@ -18,7 +18,7 @@ class Player:
         self.speed = 0
         self.doublejump = 0
         self.tempdouble = self.doublejump
-        self.maxjumpscount = 50
+        self.maxjumpscount = 2
         self.on_ground = True
         self.falling = False
         self.spacepressed = False
@@ -58,9 +58,9 @@ class Player:
                     self.coords.x += 0.75
                 if self.jumpCount > 0:
                     if bottom < self.coords.y:
-                        self.jumpCount = -1
+                        self.jumpCount = -1.5
                 
-            print(collisionresult)
+            #print(collisionresult)
         #Caps the speed at a certain max speed
         if self.speed <= -game.MAX_SPEED:
             self.speed = -game.MAX_SPEED
@@ -96,6 +96,7 @@ class Player:
 
             if collisionresult == "top_coll":
                 if self.jumpCount < 0:
+                    self.doublejump = 0
                     self.jump = False
                     self.coords.y = platform.get_position_y() - 10
                     self.jumpCount = 0
