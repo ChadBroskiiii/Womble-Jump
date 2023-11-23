@@ -32,7 +32,7 @@ class Blocks:
         result = pygame.Rect.colliderect(hitbox, platform)
 
         if result == True:
-            return "side_coll"
+            return "other_coll"
 
         if topresult == True:
             return "top_coll"
@@ -41,6 +41,9 @@ class Blocks:
 
     def get_position_y(self):
         return self.position.y - 17
+    
+    def get_main_position_y(self):
+        return self.position.y
     
     def get_position_x(self):
         return self.position.x

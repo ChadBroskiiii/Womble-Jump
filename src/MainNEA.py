@@ -30,6 +30,7 @@ class Player:
         #Iterates through each platform and checks for collisions individually
         for platform in platforms:
             midpoint = platform.get_position_x() + platform.get_size_x()/2
+            bottom = platform.get_main_position_y() + platform.get_size_y() - 5
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
             prev_x_pos = self.coords.x - self.speed
             
@@ -48,13 +49,16 @@ class Player:
                         self.speed -= game.ACCELERATION
                 
             #Reverts movement after a collision
-            elif collisionresult == "side_coll":               
+            elif collisionresult == "other_coll":               
                 if midpoint > self.coords.x:
                     self.speed = 0
                     self.coords.x -= 0.75
                 elif midpoint < self.coords.x:
                     self.speed = 0
                     self.coords.x += 0.75
+                if self.jumpCount > 0:
+                    if bottom < self.coords.y:
+                        self.jumpCount = -1
                 
             print(collisionresult)
         #Caps the speed at a certain max speed
