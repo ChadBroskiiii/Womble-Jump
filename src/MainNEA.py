@@ -183,6 +183,11 @@ class Game:
             self.clock.tick(self.FPS)
             pygame.display.flip()
 
+class Client():
+    msgFromClient = "Connected"
+    packetsToSend = str.encode(msgFromClient)
+    serverAddressPort = "127.0.0.1"
+
 #Passes the platforms list from the Game class to the Player class
 gameinstance = Game()
 playerinstance = Player(800, 600, gameinstance.platforms)
