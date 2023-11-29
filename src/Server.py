@@ -3,8 +3,8 @@ import socket
 localIP = "127.0.0.1"
 localPort = 20001
 bufferSize = 1024
-msgFromServer = "Hello UDP Client"
-bytesToSend = str.encode(msgFromServer)
+msgFromServer = "Client Connected"
+sentmessage = str.encode(msgFromServer)
 # Create a datagram socket
 UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 # Bind to address and ip
@@ -21,4 +21,4 @@ while(True):
     print(clientMsg)
     print(clientIP)
     # Sending a reply to client
-    UDPServerSocket.sendto(bytesToSend, address)
+    UDPServerSocket.sendto(sentmessage, address)
