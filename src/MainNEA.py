@@ -178,6 +178,13 @@ class Game:
 
             circle = pygame.draw.circle(self.window, (255, 0, 0), (int(self.player.coords.x), int(self.player.coords.y)),
                                         self.player.radius)
+            coordinatesx= str(str(self.player.coords.x) + " " + str(self.player.coords.y))
+            coordinatesy = str(self.player.coords.y)
+            packetsToSend = str.encode(coordinatesx)
+            serverAddressPort = ("127.0.0.1", 20001)
+            buffersize = 1024
+            UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+            UDPclientsocket.sendto(packetsToSend, serverAddressPort)
             pygame.Rect.clamp(circle, self.player.circle_hbox)
 
             self.clock.tick(self.FPS)
