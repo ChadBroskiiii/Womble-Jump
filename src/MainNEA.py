@@ -193,14 +193,6 @@ class Client():
     msgFromServer = UDPclientsocket.recvfrom(buffersize)
     msg = "Message from server {}".format(msgFromServer[0])
     print(msg)
-    gameinstance = Game()
-    playerinstance = Player(800, 600, gameinstance.platforms)
-    run = gameinstance.running
-    while run:
-        msgFromClient = str(playerinstance.coords.x)
-        packetsToSend = str.encode(msgFromClient)
-        UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-        UDPclientsocket.sendto(packetsToSend, serverAddressPort)
 
 #Passes the platforms list from the Game class to the Player class
 gameinstance = Game()
