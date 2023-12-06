@@ -1,4 +1,4 @@
-import pygame, math, socket
+import pygame, math, socket, json
 from pygame import Vector2
 from Objects import Blocks  # Assuming you have the Blocks class in a separate module
 
@@ -178,31 +178,40 @@ class Game:
 
             circle = pygame.draw.circle(self.window, (255, 0, 0), (int(self.player.coords.x), int(self.player.coords.y)),
                                         self.player.radius)
-            coordinates= str(str(self.player.coords.x) + " " + str(self.player.coords.y))
-            packetsToSend = str.encode(coordinates)
+            coordinates= {"x": self.player.coords.x, "y": self.player.coords.y}
+            packetsToSend = str.encode(json.dumps(coordinates))
             serverAddressPort = ("127.0.0.1", 20001)
             buffersize = 1024
             UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-            UDPclientsocket.sendto(packetsToSend, serverAddressPort)
-            message = UDPclientsocket.recvfrom(buffersize)
-            coordinates = str(message[0]).strip("b")
-            finalcoords = format(coordinates)
-            print(finalcoords)
+
+            try:
+                UDPclientsocket.sendto(packetsToSend, serverAddressPort)
+                message, _ = UDPclientsocket.recvfrom(buffersize)
+                message = message.decode()
+                print(message)
+                other_player_positions = json.loads(message)
+                for player_address, player_coords in other_player_positions.items():
+                    x = int(player_coords.get("x", 0))
+                    y = int(player_coords.get("y", 0))
+                    pygame.draw.circle(self.window, (0, 255, 255), (x,y), self.player.radius)
+            
+            except Exception as e:
+                print(f"Error: {e}")
+
             pygame.Rect.clamp(circle, self.player.circle_hbox)
 
             self.clock.tick(self.FPS)
             pygame.display.flip()
 
-class Client():
-    msgFromClient = "Connected"
-    packetsToSend = str.encode(msgFromClient)
-    serverAddressPort = ("127.0.0.1", 20001)
-    buffersize = 1024
-    UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-    UDPclientsocket.sendto(packetsToSend, serverAddressPort)
-    msgFromServer = UDPclientsocket.recvfrom(buffersize)
-    msg = "Message from server {}".format(msgFromServer[0])
-    print(msg)
+# class Client():
+#     msgFromClient = "Connected"
+#     packetsToSend = str.encode(msgFromClient)
+#     serverAddressPort = ("127.0.0.1", 20001)
+#     buffersize = 1024
+#     UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+#     UDPclientsocket.sendto(packetsToSend, serverAddressPort)
+#     msgFromServer = UDPclientsocket.recvfrom(buffersize)
+#     msg = "Message from server {}".format(msgFromServer[0])
 
 #Passes the platforms list from the Game class to the Player class
 gameinstance = Game()
