@@ -184,19 +184,16 @@ class Game:
             buffersize = 1024
             UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
-            try:
-                UDPclientsocket.sendto(packetsToSend, serverAddressPort)
-                message, _ = UDPclientsocket.recvfrom(buffersize)
-                message = message.decode()
-                print(message)
-                other_player_positions = json.loads(message)
-                for player_address, player_coords in other_player_positions.items():
+            UDPclientsocket.sendto(packetsToSend, serverAddressPort)
+            message, _ = UDPclientsocket.recvfrom(buffersize)
+            message = message.decode()
+            other_player_positions = json.loads(message)
+            if len(other_player_positions) != 0:
+                for player_coords in other_player_positions.items():
                     x = int(player_coords.get("x", 0))
                     y = int(player_coords.get("y", 0))
                     pygame.draw.circle(self.window, (0, 255, 255), (x,y), self.player.radius)
             
-            except Exception as e:
-                print(f"Error: {e}")
 
             pygame.Rect.clamp(circle, self.player.circle_hbox)
 
