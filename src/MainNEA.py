@@ -181,7 +181,7 @@ class Game:
             coordinates= {"x": self.player.coords.x, "y": self.player.coords.y}
             packetsToSend = str.encode(json.dumps(coordinates))
             serverAddressPort = ("127.0.0.1", 20001)
-            buffersize = 1024
+            buffersize = 2048
             UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
             UDPclientsocket.sendto(packetsToSend, serverAddressPort)
@@ -189,9 +189,9 @@ class Game:
             message = message.decode()
             other_player_positions = json.loads(message)
             if len(other_player_positions) != 0:
-                for player_coords in other_player_positions.items():
-                    x = int(player_coords.get("x", 0))
-                    y = int(player_coords.get("y", 0))
+                for i in other_player_positions.items():
+                    x = int(other_player_positions.get("x", 0))
+                    y = int(other_player_positions.get("y", 0))
                     pygame.draw.circle(self.window, (0, 255, 255), (x,y), self.player.radius)
             
 
