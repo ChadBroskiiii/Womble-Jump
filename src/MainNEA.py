@@ -178,10 +178,12 @@ class Game:
 
             circle = pygame.draw.circle(self.window, (255, 0, 0), (int(self.player.coords.x), int(self.player.coords.y)),
                                         self.player.radius)
-            coordinates= {"x": self.player.coords.x, "y": self.player.coords.y}
-            packetsToSend = str.encode(json.dumps(coordinates))
+            hostname = socket.gethostname()
+            ip_address = socket.gethostbyname(hostname)
+            coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
             serverAddressPort = ("127.0.0.1", 20001)
             buffersize = 2048
+            packetsToSend = str.encode(json.dumps(coordinates_ip))
             UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
             UDPclientsocket.sendto(packetsToSend, serverAddressPort)

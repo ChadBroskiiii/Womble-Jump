@@ -1,4 +1,5 @@
-import socket,json,ast
+import socket,json,ast,pygame
+from pygame import Vector2
 
 localIP = "127.0.0.1"
 localPort = 20001
@@ -14,13 +15,17 @@ while(True):
     bytesAddressPair = UDPServerSocket.recvfrom(bufferSize)
     message = bytesAddressPair[0]
     address = bytesAddressPair[1]
-    address_str = str(address)
-    if address_str not in positions:
-        positions[address_str] = {"x": 0, "y": 0}
-    coordinates = json.loads(message.decode())
-    positions[address_str] = coordinates
-    other_player_positions = {k: v for k, v in positions.items() if k != address_str}
-    print(other_player_positions)
+    coordinates_ip = json.loads(message.decode())
+    #print(coordinates_ip)
+    coordinates = Vector2(coordinates_ip.get("x"), coordinates_ip.get("y"))
+    coordinates_dict = {"x": coordinates.x, "y": coordinates.y}
+    ip = coordinates_ip.get("ip")
+    if positions.get(ip) == None:
+        positions[ip] = coordinates_dict
+    else:
+        positions[ip] = coordinates_dict
+    print(positions)
+    other_player_positions = {k: v for k, v in positions.items() if k != ip}
     other_player_messages = json.dumps(other_player_positions)
 
     UDPServerSocket.sendto(str.encode(other_player_messages), address)
