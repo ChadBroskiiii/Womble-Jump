@@ -16,7 +16,6 @@ while(True):
     message = bytesAddressPair[0]
     address = bytesAddressPair[1]
     coordinates_ip = json.loads(message.decode())
-    #print(coordinates_ip)
     coordinates = Vector2(coordinates_ip.get("x"), coordinates_ip.get("y"))
     coordinates_dict = {"x": coordinates.x, "y": coordinates.y}
     ip = coordinates_ip.get("ip")

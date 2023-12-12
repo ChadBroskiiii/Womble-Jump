@@ -60,7 +60,6 @@ class Player:
                     if bottom < self.coords.y:
                         self.jumpCount = -1.5
                 
-            #print(collisionresult)
         #Caps the speed at a certain max speed
         if self.speed <= -game.MAX_SPEED:
             self.speed = -game.MAX_SPEED
@@ -201,16 +200,6 @@ class Game:
 
             self.clock.tick(self.FPS)
             pygame.display.flip()
-
-# class Client():
-#     msgFromClient = "Connected"
-#     packetsToSend = str.encode(msgFromClient)
-#     serverAddressPort = ("127.0.0.1", 20001)
-#     buffersize = 1024
-#     UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-#     UDPclientsocket.sendto(packetsToSend, serverAddressPort)
-#     msgFromServer = UDPclientsocket.recvfrom(buffersize)
-#     msg = "Message from server {}".format(msgFromServer[0])
 
 #Passes the platforms list from the Game class to the Player class
 gameinstance = Game()
