@@ -2,7 +2,7 @@ import socket,json,ast,pygame
 from pygame import Vector2
 
 localIP = "127.0.0.1"
-localPort = 20001
+localPort = 7680
 bufferSize = 2048
 msgFromServer = "Client Connected"
 sentmessage = str.encode(msgFromServer)
