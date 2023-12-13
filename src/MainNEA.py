@@ -181,6 +181,7 @@ class Game:
                 (int(self.player.coords.x + camera_offset.x), int(self.player.coords.y + camera_offset.y)),
                 self.player.radius
             )
+
             hostname = socket.gethostname()
             ip_address = socket.gethostbyname(hostname)
             coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
