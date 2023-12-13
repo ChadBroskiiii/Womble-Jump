@@ -11,16 +11,23 @@ class Blocks:
         self.rect = pygame.Rect(self.position, self.size)
         self.collisionrect = pygame.rect.Rect(self.position.x + 5, self.position.y - 17, self.size.x - 10, 26)
 
-    def draw(self):
-        pygame.draw.rect(self.surface, self.color, self.rect)
+    def draw(self, offset=Vector2(0, 0)):
+        # Draw the main rectangle
+        pygame.draw.rect(self.surface, self.color, (
+            self.position.x + offset.x,
+            self.position.y + offset.y,
+            self.size.x,
+            self.size.y
+        ))
 
-        widthdiff = 10
+        # Draw the trapezium
+        width_diff = 10
         height = 50
-        bottomleft = Vector2((self.position.x), (self.position.y))
-        topleft = Vector2((self.position.x + widthdiff), (self.position.y - height))
-        bottomright = Vector2((self.position.x + self.size.x), (self.position.y))
-        topright = Vector2((self.position.x + self.size.x - widthdiff), (self.position.y - height))
-        trapezium_coords = [topleft, bottomleft, bottomright, topright]
+        bottom_left = Vector2((self.position.x + offset.x), (self.position.y + offset.y))
+        top_left = Vector2((self.position.x + width_diff + offset.x), (self.position.y - height + offset.y))
+        bottom_right = Vector2((self.position.x + self.size.x + offset.x), (self.position.y + offset.y))
+        top_right = Vector2((self.position.x + self.size.x - width_diff + offset.x), (self.position.y - height + offset.y))
+        trapezium_coords = [top_left, bottom_left, bottom_right, top_right]
         pygame.draw.polygon(self.surface, (125, 125, 125), trapezium_coords)
 
     def collision(self, coordsx, coordsy, radius, platform):
