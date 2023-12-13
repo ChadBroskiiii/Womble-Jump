@@ -8,6 +8,7 @@ msgFromServer = "Client Connected"
 sentmessage = str.encode(msgFromServer)
 UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 UDPServerSocket.bind((localIP, localPort))
+#test this when you get home
 print("UDP server up and listening")
 positions = {}
 
