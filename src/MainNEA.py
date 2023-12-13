@@ -181,23 +181,23 @@ class Game:
                 (int(self.player.coords.x + camera_offset.x), int(self.player.coords.y + camera_offset.y)),
                 self.player.radius
             )
-            # hostname = socket.gethostname()
-            # ip_address = socket.gethostbyname(hostname)
-            # coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
-            # serverAddressPort = ("192.168.160.129", 7680)
-            # buffersize = 2048
-            # packetsToSend = str.encode(json.dumps(coordinates_ip))
-            # UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+            hostname = socket.gethostname()
+            ip_address = socket.gethostbyname(hostname)
+            coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
+            serverAddressPort = ("192.168.4.35", 7680)
+            buffersize = 2048
+            packetsToSend = str.encode(json.dumps(coordinates_ip))
+            UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
-            # UDPclientsocket.sendto(packetsToSend, serverAddressPort)
-            # message, _ = UDPclientsocket.recvfrom(buffersize)
-            # message = message.decode()
-            # other_player_positions = json.loads(message)
-            # if len(other_player_positions) != 0:
-            #     for i in other_player_positions.items():
-            #         x = int(other_player_positions.get("x", 0))
-            #         y = int(other_player_positions.get("y", 0))
-            #         pygame.draw.circle(self.window, (0, 255, 255), (x,y), self.player.radius)
+            UDPclientsocket.sendto(packetsToSend, serverAddressPort)
+            message, _ = UDPclientsocket.recvfrom(buffersize)
+            message = message.decode()
+            other_player_positions = json.loads(message)
+            if len(other_player_positions) != 0:
+                for i in other_player_positions.items():
+                    x = int(other_player_positions.get("x", 0))
+                    y = int(other_player_positions.get("y", 0))
+                    pygame.draw.circle(self.window, (0, 255, 255), (x,y), self.player.radius)
             
 
             pygame.Rect.clamp(circle, self.player.circle_hbox)
