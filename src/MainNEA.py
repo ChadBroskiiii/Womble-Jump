@@ -97,7 +97,7 @@ class Player:
                 if self.jumpCount < 0:
                     self.doublejump = 0
                     self.jump = False
-                    self.coords.y = platform.get_position_y() - 10
+                    self.coords.y = platform.get_position_y()# - self.radius
                     self.jumpCount = 0
                 else:
                     self.jump = True
