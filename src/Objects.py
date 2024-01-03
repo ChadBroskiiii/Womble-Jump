@@ -13,6 +13,7 @@ class Blocks:
 
     def draw(self, offset=Vector2(0, 0)):
         # Draw the main rectangle
+        relative_height = min(600-(self.position.y + self.size.y - offset.y), 0)
         pygame.draw.rect(self.surface, self.color, (
             self.position.x + offset.x,
             self.position.y + offset.y,
@@ -22,7 +23,7 @@ class Blocks:
 
         # Draw the trapezium
         width_diff = 10
-        height = 50
+        height = (50 - relative_height)* 0.2
         bottom_left = Vector2((self.position.x + offset.x), (self.position.y + offset.y))
         top_left = Vector2((self.position.x + width_diff + offset.x), (self.position.y - height + offset.y))
         bottom_right = Vector2((self.position.x + self.size.x + offset.x), (self.position.y + offset.y))

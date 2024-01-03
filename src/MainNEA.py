@@ -185,7 +185,7 @@ class Game:
             hostname = socket.gethostname()
             ip_address = socket.gethostbyname(hostname)
             coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
-            serverAddressPort = ("192.168.4.35", 7680)
+            serverAddressPort = ("192.168.56.1", 7680)
             buffersize = 2048
             packetsToSend = str.encode(json.dumps(coordinates_ip))
             UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
