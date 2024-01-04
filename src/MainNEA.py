@@ -21,7 +21,6 @@ class Player:
         self.maxjumpscount = 2
         self.on_ground = True
         self.falling = False
-        self.spacepressed = False
         self.circle_hbox = pygame.Rect(self.coords.x - self.radius, self.coords.y + self.radius, self.radius * 2 + 1,
                                        self.radius * 2 + 1)
         self.platforms = platforms
@@ -32,7 +31,6 @@ class Player:
             midpoint = platform.get_position_x() + platform.get_size_x()/2
             bottom = platform.get_main_position_y() + platform.get_size_y() - 5
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
-            prev_x_pos = self.coords.x - self.speed
             
             #Controls the left and right movement with acceleration and deceleration
             if collisionresult == False:
@@ -182,23 +180,23 @@ class Game:
                 self.player.radius
             )
 
-            hostname = socket.gethostname()
-            ip_address = socket.gethostbyname(hostname)
-            coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
-            serverAddressPort = ("192.168.56.1", 7680)
-            buffersize = 2048
-            packetsToSend = str.encode(json.dumps(coordinates_ip))
-            UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+            # hostname = socket.gethostname()
+            # ip_address = socket.gethostbyname(hostname)
+            # coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
+            # serverAddressPort = ("192.168.56.1", 7680)
+            # buffersize = 2048
+            # packetsToSend = str.encode(json.dumps(coordinates_ip))
+            # UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
-            UDPclientsocket.sendto(packetsToSend, serverAddressPort)
-            message, _ = UDPclientsocket.recvfrom(buffersize)
-            message = message.decode()
-            other_player_positions = json.loads(message)
-            if len(other_player_positions) != 0:
-                for i in other_player_positions.items():
-                    x = int(other_player_positions.get("x", 0))
-                    y = int(other_player_positions.get("y", 0))
-                    pygame.draw.circle(self.window, (0, 255, 255), (x,y), self.player.radius)
+            # UDPclientsocket.sendto(packetsToSend, serverAddressPort)
+            # message, _ = UDPclientsocket.recvfrom(buffersize)
+            # message = message.decode()
+            # other_player_positions = json.loads(message)
+            # if len(other_player_positions) != 0:
+            #     for i in other_player_positions.items():
+            #         x = int(other_player_positions.get("x", 0))
+            #         y = int(other_player_positions.get("y", 0))
+            #         pygame.draw.circle(self.window, (0, 255, 255), (x,y), self.player.radius)
             
 
             pygame.Rect.clamp(circle, self.player.circle_hbox)
@@ -206,11 +204,9 @@ class Game:
             self.clock.tick(self.FPS)
             pygame.display.flip()
 
-#Passes the platforms list from the Game class to the Player class
 gameinstance = Game()
 playerinstance = Player(800, 600, gameinstance.platforms)
 playerinstance.platforms = gameinstance.platforms
-
 
 if __name__ == "__main__":
     game = Game()
