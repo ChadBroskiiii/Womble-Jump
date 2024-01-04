@@ -25,9 +25,9 @@ class Blocks:
         width_diff = 10
         height = (50 - relative_height)* 0.2
         bottom_left = Vector2((self.position.x + offset.x), (self.position.y + offset.y))
-        top_left = Vector2((self.position.x + width_diff + offset.x), (self.position.y - height + offset.y))
+        top_left = Vector2((self.position.x + width_diff + offset.x), (self.position.y + relative_height + height + offset.y))
         bottom_right = Vector2((self.position.x + self.size.x + offset.x), (self.position.y + offset.y))
-        top_right = Vector2((self.position.x + self.size.x - width_diff + offset.x), (self.position.y - height + offset.y))
+        top_right = Vector2((self.position.x + self.size.x - width_diff + offset.x), (self.position.y + relative_height + height + offset.y))
         trapezium_coords = [top_left, bottom_left, bottom_right, top_right]
         pygame.draw.polygon(self.surface, (125, 125, 125), trapezium_coords)
 
