@@ -12,22 +12,23 @@ class Blocks:
         self.collisionrect = pygame.rect.Rect(self.position.x + 5, self.position.y - 17, self.size.x - 10, 26)
 
     def draw(self, offset=Vector2(0, 0)):
+        change_in_perspective = (offset.y + self.position.y / 4) / 6
         # Draw the main rectangle
-        relative_height = min(600-(self.position.y + self.size.y - offset.y), 0)
         pygame.draw.rect(self.surface, self.color, (
-            self.position.x + offset.x,
+            self.position.x,
             self.position.y + offset.y,
             self.size.x,
-            self.size.y
+            self.size.y - change_in_perspective/3
         ))
+        
 
         # Draw the trapezium
         width_diff = 10
-        height = (50 - relative_height)* 0.2
-        bottom_left = Vector2((self.position.x + offset.x), (self.position.y + offset.y))
-        top_left = Vector2((self.position.x + width_diff + offset.x), (self.position.y + relative_height + height + offset.y))
-        bottom_right = Vector2((self.position.x + self.size.x + offset.x), (self.position.y + offset.y))
-        top_right = Vector2((self.position.x + self.size.x - width_diff + offset.x), (self.position.y + relative_height + height + offset.y))
+        height = (50)* 0.2
+        bottom_left = Vector2((self.position.x), (self.position.y + offset.y))
+        bottom_right = Vector2((self.position.x + self.size.x), (self.position.y + offset.y))
+        top_left = Vector2((self.position.x + width_diff), (self.position.y + height + offset.y - change_in_perspective -100))
+        top_right = Vector2((self.position.x + self.size.x - width_diff), (self.position.y + height + offset.y - change_in_perspective -100))
         trapezium_coords = [top_left, bottom_left, bottom_right, top_right]
         pygame.draw.polygon(self.surface, (125, 125, 125), trapezium_coords)
 
