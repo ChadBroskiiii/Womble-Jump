@@ -129,12 +129,12 @@ class Game:
         self.speed = 0
         self.bg_colour = (0, 0, 0)
         self.window = pygame.display.set_mode((self.screen_width, self.screen_height))
-        pygame.display.set_caption("Him")
+        pygame.display.set_caption("Womble jump")
         self.clock = pygame.time.Clock()
         #List with all the playforms in the game at that moment
         self.platforms = [
-            Blocks(self.window, (200, 200, 200), (self.screen_width / 3, self.screen_height / 1.5), (100, 500), ()),
-            Blocks(self.window, (200, 200, 0), (self.screen_width / 2, 250), (150, 50), ())
+            Blocks(self.window, (255, 209, 220), (self.screen_width / 3, self.screen_height / 1.5), (100, 100), ()),
+            Blocks(self.window, (174, 198, 207), (self.screen_width / 2, 250), (150, 50), ())
         ]
 
         self.player = Player(self.screen_width, self.screen_height, self.platforms)
