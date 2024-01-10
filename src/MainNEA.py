@@ -1,4 +1,4 @@
-import pygame, math, socket, json
+import pygame, math, socket, json, random
 from pygame import Vector2
 from Objects import Blocks  # Assuming you have the Blocks class in a separate module
 
@@ -196,8 +196,7 @@ class Game:
             #     for i in other_player_positions.items():
             #         x = int(other_player_positions.get("x", 0))
             #         y = int(other_player_positions.get("y", 0))
-            #         pygame.draw.circle(self.window, (0, 255, 255), (x,y), self.player.radius)
-            
+            #         pygame.draw.circle(self.window, (random.randint(0,255),random.randint(0,255),random.randint(0,255)), (x,y), 10)
 
             pygame.Rect.clamp(circle, self.player.circle_hbox)
 
