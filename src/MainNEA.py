@@ -18,7 +18,7 @@ class Player:
         self.speed = 0
         self.doublejump = 0
         self.tempdouble = self.doublejump
-        self.maxjumpscount = 2
+        self.maxjumpscount = 100000
         self.on_ground = True
         self.falling = False
         self.circle_hbox = pygame.Rect(self.coords.x - self.radius, self.coords.y + self.radius, self.radius * 2 + 1,
@@ -134,9 +134,10 @@ class Game:
         #List with all the playforms in the game at that moment
         self.platforms = [
             Blocks(self.window, (255, 209, 220), (self.screen_width / 3, self.screen_height / 1.5), (100, 100), ()),
-            Blocks(self.window, (174, 198, 207), (self.screen_width / 2, 250), (150, 50), ())
+            Blocks(self.window, (174, 198, 207), (self.screen_width / 2, 250), (150, 50), ()),
+            Blocks(self.window, (207, 198, 100), (self.screen_width / 2.5, 100), (150, 50), ())
         ]
-
+        
         self.player = Player(self.screen_width, self.screen_height, self.platforms)
         self.movingl = True
         self.movingr = True
@@ -171,9 +172,24 @@ class Game:
             # Calculate camera offset based on player position
             camera_offset = Vector2(0, self.screen_height / 2 - self.player.coords.y)
             self.window.fill(self.bg_colour)
-            for platform in self.platforms:
-                platform.draw(offset=camera_offset)
+            # platform_y_list = []
+            # for platform in self.platforms:
+            #     platform_y_list.append(platform.position.y)
+            # lowestplat = min(platform_y_list)
 
+            # for platform in self.platforms:
+            #     if lowestplat == platform.position.y:
+            #         ydistance = self.player.coords.y - camera_offset.y - lowestplat
+            #         print(ydistance)
+            #         if ydistance <= (self.screen_height/2):
+            #             platform.position.y -= self.screen_height
+            #             platform.draw(offset=camera_offset)
+            #         else:
+            #             platform.draw(offset=camera_offset)
+            #     else:
+            #         platform.draw(offset=camera_offset)
+            for platform in self.platforms:
+                platform.draw(camera_offset)
             circle = pygame.draw.circle(self.window,
                 (255, 0, 0),
                 (int(self.player.coords.x + camera_offset.x), int(self.player.coords.y + camera_offset.y)),
