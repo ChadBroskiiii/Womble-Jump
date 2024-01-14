@@ -210,12 +210,13 @@ class Game:
             message = message.decode()
             other_player_positions = json.loads(message)
             ip = other_player_positions.keys()
-            coordinates_dict = other_player_positions[ip]
-            x = coordinates_dict.get("x")
-            y = coordinates_dict.get("y")
-            print(coordinates_dict)
-            if len(other_player_positions) != 0:
-                for i in other_player_positions.items():
+            ip_list = list(ip)
+            print(ip_list)
+            if len(ip_list) != 0:
+                for i in ip_list:
+                    coordinates_dict = other_player_positions[ip_list[i]]
+                    x = coordinates_dict.get("x")
+                    y = coordinates_dict.get("y")
                     print(x,y)
                     pygame.draw.circle(self.window, (100,100,100), (x,y), 10)
 
