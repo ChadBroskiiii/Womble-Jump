@@ -213,8 +213,10 @@ class Game:
             ip_list = list(ip)
             print(ip_list)
             if len(ip_list) != 0:
-                for i in ip_list:
-                    coordinates_dict = other_player_positions[ip_list[i]]
+                for i in range(len(ip_list)):
+                    ip_list_val = ip_list[i]
+                    print(ip_list_val)
+                    coordinates_dict = other_player_positions.get(ip_list_val)
                     x = coordinates_dict.get("x")
                     y = coordinates_dict.get("y")
                     print(x,y)
