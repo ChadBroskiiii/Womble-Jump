@@ -211,9 +211,9 @@ class Game:
             other_player_positions = json.loads(message)
             if len(other_player_positions) != 0:
                 for i in other_player_positions.items():
-                    x = int(other_player_positions.get("x", 0))
-                    y = int(other_player_positions.get("y", 0))
-                    pygame.draw.circle(self.window, (random.randint(0,255),random.randint(0,255),random.randint(0,255)), (x,y), 10)
+                    x = int(other_player_positions.get("x"))
+                    y = int(other_player_positions.get("y"))
+                    pygame.draw.circle(self.window, (100,100,100), (x,y), 10)
 
             pygame.Rect.clamp(circle, self.player.circle_hbox)
 
