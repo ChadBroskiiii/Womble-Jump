@@ -213,6 +213,7 @@ class Game:
                 for i in other_player_positions.items():
                     x = other_player_positions.get("x")
                     y = other_player_positions.get("y")
+                    print(x,y)
                     pygame.draw.circle(self.window, (100,100,100), (x,y), 10)
 
             pygame.Rect.clamp(circle, self.player.circle_hbox)
