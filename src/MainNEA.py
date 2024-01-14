@@ -210,6 +210,7 @@ class Game:
             message = message.decode()
             other_player_positions = json.loads(message)
             if len(other_player_positions) != 0:
+                print(other_player_positions)
                 for i in other_player_positions.items():
                     x = other_player_positions.get("x")
                     y = other_player_positions.get("y")
