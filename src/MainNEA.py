@@ -210,11 +210,11 @@ class Game:
             message = message.decode()
             other_player_positions = json.loads(message)
             tempdict = other_player_positions.values()
+            x = tempdict.get("x")
+            y = tempdict.get("y")
             print(tempdict)
             if len(other_player_positions) != 0:
                 for i in other_player_positions.items():
-                    x = other_player_positions.get("x")
-                    y = other_player_positions.get("y")
                     print(x,y)
                     pygame.draw.circle(self.window, (100,100,100), (x,y), 10)
 
