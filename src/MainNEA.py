@@ -137,7 +137,7 @@ class Game:
             Blocks(self.window, (174, 198, 207), (self.screen_width / 2, 250), (150, 50), ()),
             Blocks(self.window, (207, 198, 100), (self.screen_width / 2.5, 100), (150, 50), ())
         ]
-        
+
         self.player = Player(self.screen_width, self.screen_height, self.platforms)
         self.movingl = True
         self.movingr = True
@@ -172,10 +172,13 @@ class Game:
             # Calculate camera offset based on player position
             camera_offset = Vector2(0, self.screen_height / 2 - self.player.coords.y)
             self.window.fill(self.bg_colour)
-            # platform_y_list = []
             # for platform in self.platforms:
-            #     platform_y_list.append(platform.position.y)
-            # lowestplat = min(platform_y_list)
+            #     if platform.position.y + camera_offset.y > self.screen_height:
+            #         platform.position.y += (camera_offset.y - self.screen_height)
+            #     platform.draw(offset=camera_offset)
+            
+            for platform in self.platforms:
+                platform.draw(offset=camera_offset)
 
             # for platform in self.platforms:
             #     if lowestplat == platform.position.y:
@@ -188,31 +191,29 @@ class Game:
             #             platform.draw(offset=camera_offset)
             #     else:
             #         platform.draw(offset=camera_offset)
-            for platform in self.platforms:
-                platform.draw(camera_offset)
             circle = pygame.draw.circle(self.window,
                 (255, 0, 0),
                 (int(self.player.coords.x + camera_offset.x), int(self.player.coords.y + camera_offset.y)),
                 self.player.radius
             )
 
-            # hostname = socket.gethostname()
-            # ip_address = socket.gethostbyname(hostname)
-            # coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
-            # serverAddressPort = ("192.168.56.1", 7680)
-            # buffersize = 2048
-            # packetsToSend = str.encode(json.dumps(coordinates_ip))
-            # UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+            hostname = socket.gethostname()
+            ip_address = socket.gethostbyname(hostname)
+            coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
+            serverAddressPort = ("192.168.4.23", 7680)
+            buffersize = 2048
+            packetsToSend = str.encode(json.dumps(coordinates_ip))
+            UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
-            # UDPclientsocket.sendto(packetsToSend, serverAddressPort)
-            # message, _ = UDPclientsocket.recvfrom(buffersize)
-            # message = message.decode()
-            # other_player_positions = json.loads(message)
-            # if len(other_player_positions) != 0:
-            #     for i in other_player_positions.items():
-            #         x = int(other_player_positions.get("x", 0))
-            #         y = int(other_player_positions.get("y", 0))
-            #         pygame.draw.circle(self.window, (random.randint(0,255),random.randint(0,255),random.randint(0,255)), (x,y), 10)
+            UDPclientsocket.sendto(packetsToSend, serverAddressPort)
+            message, _ = UDPclientsocket.recvfrom(buffersize)
+            message = message.decode()
+            other_player_positions = json.loads(message)
+            if len(other_player_positions) != 0:
+                for i in other_player_positions.items():
+                    x = int(other_player_positions.get("x", 0))
+                    y = int(other_player_positions.get("y", 0))
+                    pygame.draw.circle(self.window, (random.randint(0,255),random.randint(0,255),random.randint(0,255)), (x,y), 10)
 
             pygame.Rect.clamp(circle, self.player.circle_hbox)
 
