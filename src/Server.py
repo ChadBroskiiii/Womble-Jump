@@ -19,12 +19,13 @@ while(True):
     coordinates_ip = json.loads(message.decode())
     coordinates = Vector2(coordinates_ip.get("x"), coordinates_ip.get("y"))
     coordinates_dict = {"x": coordinates.x, "y": coordinates.y}
+    print(positions)
     ip = coordinates_ip.get("ip")
     if positions.get(ip) == None:
         positions[ip] = coordinates_dict
     else:
         positions[ip] = coordinates_dict
-    print(positions)
+    #print(positions)
     other_player_positions = {k: v for k, v in positions.items() if k != ip}
     other_player_messages = json.dumps(other_player_positions)
 

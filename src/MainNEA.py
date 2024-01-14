@@ -218,7 +218,7 @@ class Game:
                     print(ip_list_val)
                     coordinates_dict = other_player_positions.get(ip_list_val)
                     x = coordinates_dict.get("x")
-                    y = coordinates_dict.get("y")
+                    y = coordinates_dict.get("y") + camera_offset.y
                     print(x,y)
                     pygame.draw.circle(self.window, (100,100,100), (x,y), 10)
 
