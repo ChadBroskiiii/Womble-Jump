@@ -209,10 +209,11 @@ class Game:
             message, _ = UDPclientsocket.recvfrom(buffersize)
             message = message.decode()
             other_player_positions = json.loads(message)
-            tempdict = other_player_positions.values()
-            x = tempdict.get("x")
-            y = tempdict.get("y")
-            print(tempdict)
+            ip = other_player_positions.keys()
+            coordinates_dict = other_player_positions[ip]
+            x = coordinates_dict.get("x")
+            y = coordinates_dict.get("y")
+            print(coordinates_dict)
             if len(other_player_positions) != 0:
                 for i in other_player_positions.items():
                     print(x,y)
