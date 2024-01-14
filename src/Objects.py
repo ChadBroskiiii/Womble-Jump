@@ -12,7 +12,7 @@ class Blocks:
         self.collisionrect = pygame.rect.Rect(self.position.x + 5, self.position.y - 17, self.size.x - 10, 26)
 
     def draw(self, offset=Vector2(0, 0)):
-        change_in_perspective = (offset.y + self.position.y / 4) / 9
+        change_in_perspective = (offset.y + self.position.y / 4) / 8
         # Draw the main rectangle
         pygame.draw.rect(self.surface, self.color, (
             self.position.x,
