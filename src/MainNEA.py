@@ -200,26 +200,22 @@ class Game:
             hostname = socket.gethostname()
             ip_address = socket.gethostbyname(hostname)
             coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
-            serverAddressPort = ("192.168.4.23", 7680)
+            serverAddressPort = ("10.6.69.36", 7680)
             buffersize = 2048
             packetsToSend = str.encode(json.dumps(coordinates_ip))
             UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-
             UDPclientsocket.sendto(packetsToSend, serverAddressPort)
             message, _ = UDPclientsocket.recvfrom(buffersize)
             message = message.decode()
             other_player_positions = json.loads(message)
             ip = other_player_positions.keys()
             ip_list = list(ip)
-            print(ip_list)
             if len(ip_list) != 0:
                 for i in range(len(ip_list)):
                     ip_list_val = ip_list[i]
-                    print(ip_list_val)
                     coordinates_dict = other_player_positions.get(ip_list_val)
                     x = coordinates_dict.get("x")
                     y = coordinates_dict.get("y") + camera_offset.y
-                    print(x,y)
                     pygame.draw.circle(self.window, (100,100,100), (x,y), 10)
 
             pygame.Rect.clamp(circle, self.player.circle_hbox)
