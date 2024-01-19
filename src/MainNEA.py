@@ -169,7 +169,7 @@ class Game:
             self.handle_events()
             self.player.update_position(keys, self.platforms)
             self.player.check_floor_collision(self.screen_height)
-            # Calculate camera offset based on player position
+            # Calculate camera offset based on player positions
             camera_offset = Vector2(0, self.screen_height / 2 - self.player.coords.y)
             self.window.fill(self.bg_colour)
             # for platform in self.platforms:
