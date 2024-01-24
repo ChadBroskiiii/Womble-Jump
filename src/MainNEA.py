@@ -18,7 +18,7 @@ class Player:
         self.speed = 0
         self.doublejump = 0
         self.tempdouble = self.doublejump
-        self.maxjumpscount = 100000
+        self.maxjumpscount = 30000
         self.on_ground = True
         self.falling = False
         self.circle_hbox = pygame.Rect(self.coords.x - self.radius, self.coords.y + self.radius, self.radius * 2 + 1,
@@ -37,13 +37,13 @@ class Player:
             
             #Controls the left and right movement with acceleration and deceleration
             if collisionresult == False:
-                if keys[pygame.K_LEFT]:
+                if keys[pygame.K_LEFT] or keys[pygame.K_a]:
                     self.speed -= game.ACCELERATION
                 else:
                     if self.speed < 0:
                         self.speed += game.ACCELERATION
 
-                if keys[pygame.K_RIGHT]:
+                if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                     self.speed += game.ACCELERATION
                 else:
                     if self.speed > 0:
@@ -134,11 +134,18 @@ class Game:
         self.window = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Womble jump")
         self.clock = pygame.time.Clock()
+        self.colour_list = []
+        for i in range(16):
+            self.rand_color = random.choices(range(256), k=3)
+            self.colour_list.append(self.rand_color)
+        
         #List with all the playforms in the game at that moment
         self.platforms = [
-            Blocks(self.window, (255, 209, 220), (self.screen_width / 3, self.screen_height / 1.5), (100, 100), ()),
-            Blocks(self.window, (174, 198, 207), (self.screen_width / 2, 250), (150, 50), ()),
-            Blocks(self.window, (207, 198, 100), (self.screen_width / 2.5, 100), (150, 50), ())
+            Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 3, self.screen_height / 1.5), (150, 50), ()),
+            Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 2, 250), (150, 50), ()),
+            Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 2.5, 100), (150, 50), ()),
+            Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 1.5, 50), (150, 50), ()),
+            Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 5, 600), (150, 50), ())
         ]
 
         self.player = Player(self.screen_width, self.screen_height, self.platforms)
@@ -150,7 +157,7 @@ class Game:
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE or event.key == pygame.K_UP or event.key == pygame.K_w:
                     self.player.spacepressed = True
                     if self.player.doublejump < self.player.maxjumpscount:
                         self.player.jump = True
@@ -158,7 +165,7 @@ class Game:
                         self.player.falling = True
                         self.player.doublejump += 1
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE or event.key == pygame.K_UP or event.key == pygame.K_w:
                     self.player.spacepressed == False
             if event.type == pygame.QUIT:
                 self.running = False
@@ -175,25 +182,12 @@ class Game:
             # Calculate camera offset based on player positions
             camera_offset = Vector2(0, self.screen_height / 2 - self.player.coords.y)
             self.window.fill(self.bg_colour)
-            # for platform in self.platforms:
-            #     if platform.position.y + camera_offset.y > self.screen_height:
-            #         platform.position.y += (camera_offset.y - self.screen_height)
-            #     platform.draw(offset=camera_offset)
             
-            # for platform in self.platforms:
-            #     platform.draw(offset=camera_offset)
-
             for platform in self.platforms:
-                if platform.position.y + camera_offset.y > self.screen_height:
-                    self.platforms.remove(platform)
-                    self.platforms.append(Blocks(self.window, platform.color, (platform.position.x, platform.position.y - self.screen_height), platform.size, ()))
-                platform.draw(offset=camera_offset)
-
-            # circle = pygame.draw.circle(self.window,
-            #     (255, 0, 0),
-            #     (int(self.player.coords.x + camera_offset.x), int(self.player.coords.y + camera_offset.y)),
-            #     self.player.radius
-            # )
+                # if platform.position.y + camera_offset.y > self.screen_height:
+                #     self.platforms.remove(platform)
+                #     self.platforms.append(Blocks(self.window, platform.color, (platform.position.x, platform.position.y - self.screen_height), platform.size, ()))
+                platform.draw(offset=camera_offset, coords=playerinstance.coords)
                 
             window = playerinstance.window
             window.blit(playerinstance.image, (self.player.coords.x - 25, self.player.coords.y + camera_offset.y - 35))
