@@ -126,13 +126,14 @@ class Game:
         self.ACCELERATION = 0.25
         self.MAX_SPEED = 5
         self.speed = 0
-        self.bg_colour = (120, 190, 205)
         self.window = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Womble jump")
         self.clock = pygame.time.Clock()
         self.colour_list = []
         self.directory = os.getcwd()
         self.bg = pygame.image.load(self.directory +"/res/backgrounds/blue_sky_pixel_art.jpg")
+        self.finish = pygame.image.load(self.directory + "/res/assets/checkered_line.jpg")
+        self.finish = pygame.transform.scale(self.finish, (self.screen_width, 250))
         for i in range(16):
             self.rand_color = random.choices(range(256), k=3)
             self.colour_list.append(self.rand_color)
@@ -169,8 +170,19 @@ class Game:
                 self.running = False
 
 
+    def text(self, text, x, y, size):
+        colour = (0,200,0)
+        font_type = self.directory + '/res/fonts/PublicPixel.ttf'
+
+        text = str(text)
+        font = pygame.font.Font(font_type, size)
+        text = font.render(text, True, colour)
+        self.window.blit(text, (x,y))
+
+
     def run(self):
         while self.running:
+            win_height = -800
             pygame.time.delay(0)
 
             keys = pygame.key.get_pressed()
@@ -180,6 +192,7 @@ class Game:
             # Calculate camera offset based on player positions
             camera_offset = Vector2(0, self.screen_height / 2 - self.player.coords.y)
             self.window.blit(self.bg, (0,-1200 - 0.2*self.player.coords.y))
+            self.window.blit(self.finish, (0, win_height + camera_offset.y - 250))
             
             for platform in self.platforms:
                 # if platform.position.y + camera_offset.y > self.screen_height:
@@ -188,11 +201,12 @@ class Game:
                 
             window = playerinstance.window
             window.blit(playerinstance.image, (self.player.coords.x - 25, self.player.coords.y + camera_offset.y - 35))
-        
+            ip_list = []
+
             # hostname = socket.gethostname()
             # ip_address = socket.gethostbyname(hostname)
             # coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
-            # serverAddressPort = ("192.168.17.129", 7680)
+            # serverAddressPort = ("192.168.33.129", 7680)
             # buffersize = 2048
             # packetsToSend = str.encode(json.dumps(coordinates_ip))
             # UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
@@ -209,6 +223,20 @@ class Game:
             #         x = coordinates_dict.get("x")
             #         y = coordinates_dict.get("y") + camera_offset.y
             #         pygame.draw.circle(self.window, (100,100,100), (x,y), 10)
+            
+            if len(ip_list) > 0:
+                ip_list_val_1 = ip_list[0]
+                player_2_coords = other_player_positions.get(ip_list_val_1)
+                player_2_y = player_2_coords.get("y") + camera_offset.y
+
+                if player_2_y <= win_height:
+                    self.text("PLAYER 2 WINS", 78.5, self.screen_height/3, 50)
+                elif self.player.coords.y <= win_height:
+                    self.text("PLAYER 1 WINS", 78.5, self.screen_height/3, 50)
+            else:
+                if self.player.coords.y <= win_height:
+                    self.text("PLAYER 1 WINS", 78.5, self.screen_height/3, 50)
+            
 
             self.clock.tick(self.FPS)
             pygame.display.flip()
