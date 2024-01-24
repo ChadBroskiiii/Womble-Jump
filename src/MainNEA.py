@@ -19,7 +19,6 @@ class Player:
         self.doublejump = 0
         self.tempdouble = self.doublejump
         self.maxjumpscount = 30000
-        self.on_ground = True
         self.falling = False
         self.circle_hbox = pygame.Rect(self.coords.x - self.radius, self.coords.y + self.radius, self.radius * 2 + 1,
                                        self.radius * 2 + 1)
@@ -80,7 +79,6 @@ class Player:
         
         #Jump calculations with acceleration
         if self.jump:
-            self.on_ground = False
             self.coords.y -= 0.8*self.jumpCount
             if self.jumpCount == -6:
                 self.falling = True
@@ -110,14 +108,12 @@ class Player:
         if self.coords.y >= (game.screen_height-2*self.radius):
             self.jump = False
             self.doublejump = 0
-            self.on_ground = True
             self.falling = False
 
     def check_floor_collision(self, screen_height):
         if self.coords.y >= (screen_height - 2 * self.radius):
             self.jump = False
             self.doublejump = 0
-            self.on_ground = True
             self.falling = False
 
 class Game:
@@ -186,6 +182,8 @@ class Game:
             self.window.blit(self.bg, (0,-1200 - 0.2*self.player.coords.y))
             
             for platform in self.platforms:
+                # if platform.position.y + camera_offset.y > self.screen_height:
+                #     self.platforms.remove(platform)
                 platform.draw(offset=camera_offset, coords=playerinstance.coords)
                 
             window = playerinstance.window
@@ -211,8 +209,6 @@ class Game:
             #         x = coordinates_dict.get("x")
             #         y = coordinates_dict.get("y") + camera_offset.y
             #         pygame.draw.circle(self.window, (100,100,100), (x,y), 10)
-
-            # pygame.Rect.clamp(circle, self.player.circle_hbox)
 
             self.clock.tick(self.FPS)
             pygame.display.flip()
