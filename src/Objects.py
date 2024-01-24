@@ -13,8 +13,7 @@ class Blocks:
 
     def draw(self, offset=Vector2(0, 0), coords=Vector2(0, 0)):
         distance_to_player = (self.position.y - coords.y + offset.y) +250
-        change_in_perspective = (distance_to_player / 8)
-        print(change_in_perspective)
+        change_in_perspective = (distance_to_player / 6)
         # Draw the main rectangle
         pygame.draw.rect(self.surface, self.color, (
             self.position.x,

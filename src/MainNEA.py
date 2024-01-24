@@ -135,6 +135,8 @@ class Game:
         pygame.display.set_caption("Womble jump")
         self.clock = pygame.time.Clock()
         self.colour_list = []
+        self.directory = os.getcwd()
+        self.bg = pygame.image.load(self.directory +"/res/backgrounds/blue_sky_pixel_art.jpg")
         for i in range(16):
             self.rand_color = random.choices(range(256), k=3)
             self.colour_list.append(self.rand_color)
@@ -181,12 +183,9 @@ class Game:
             self.player.check_floor_collision(self.screen_height)
             # Calculate camera offset based on player positions
             camera_offset = Vector2(0, self.screen_height / 2 - self.player.coords.y)
-            self.window.fill(self.bg_colour)
+            self.window.blit(self.bg, (0,-1200 - 0.2*self.player.coords.y))
             
             for platform in self.platforms:
-                # if platform.position.y + camera_offset.y > self.screen_height:
-                #     self.platforms.remove(platform)
-                #     self.platforms.append(Blocks(self.window, platform.color, (platform.position.x, platform.position.y - self.screen_height), platform.size, ()))
                 platform.draw(offset=camera_offset, coords=playerinstance.coords)
                 
             window = playerinstance.window
