@@ -1,7 +1,7 @@
 import socket,json,ast,pygame
 from pygame import Vector2
 
-localIP = "192.168.33.129"
+localIP = "192.168.4.23"
 localPort = 7680
 bufferSize = 2048
 msgFromServer = "Client Connected"
