@@ -200,8 +200,9 @@ class Game:
                 platform.draw(offset=camera_offset, coords=playerinstance.coords)
                 
             window = playerinstance.window
-            window.blit(playerinstance.image, (self.player.coords.x - 25, self.player.coords.y + camera_offset.y - 35))
+            window.blit(playerinstance.image, (self.player.coords.x - 25, self.player.coords.y + camera_offset.y - 45))
             ip_list = []
+            other_player_positions = 0
 
             # hostname = socket.gethostname()
             # ip_address = socket.gethostbyname(hostname)

@@ -25,7 +25,7 @@ class Blocks:
 
         # Draw the trapezium
         width_diff = 10
-        height = (50)* 0.2
+        height = (50)* 0.1
         bottom_left = Vector2((self.position.x), (self.position.y + offset.y))
         bottom_right = Vector2((self.position.x + self.size.x), (self.position.y + offset.y))
         top_left = Vector2((self.position.x + width_diff), (self.position.y + height + offset.y - change_in_perspective -100))
