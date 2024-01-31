@@ -1,9 +1,10 @@
 import pygame, math, socket, json, random, os
 from pygame import Vector2
 from Objects import Blocks  # Assuming you have the Blocks class in a separate module
+from Button import Button
 
 class Player:
-    def __init__(self, screen_width, screen_height, platforms):
+    def __init__(self, screen_width, screen_height, map_1_platforms):
         #Initialisation variables
         self.screen_width = 800
         self.screen_height = 600
@@ -22,14 +23,14 @@ class Player:
         self.falling = False
         self.circle_hbox = pygame.Rect(self.coords.x - self.radius, self.coords.y + self.radius, self.radius * 2 + 1,
                                        self.radius * 2 + 1)
-        self.platforms = platforms
+        self.map_1_platforms = map_1_platforms
         self.directory = os.getcwd()
         self.image = pygame.image.load(self.directory +"/res/avatars/Womble_Blue.png")
         self.image = pygame.transform.scale(self.image, (50, 50))
 
-    def update_position(self, keys, platforms):
+    def update_position(self, keys, map_1_platforms):
         #Iterates through each platform and checks for collisions individually
-        for platform in platforms:
+        for platform in map_1_platforms:
             midpoint = platform.get_position_x() + platform.get_size_x()/2
             bottom = platform.get_main_position_y() + platform.get_size_y() - 5
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
@@ -89,7 +90,7 @@ class Player:
                     self.jump = True
 
         #Checks for top collisions and stops the player
-        for platform in platforms:
+        for platform in map_1_platforms:
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
 
             if collisionresult == "top_coll":
@@ -116,6 +117,32 @@ class Player:
             self.doublejump = 0
             self.falling = False
 
+class Main_Menu:
+    def __init__(self):
+        pygame.init()
+        self.map1 = gameinstance.map_1_platforms
+        self.FPS = 120
+        self.screen_width = 800
+        self.screen_height = 600
+        self.window = pygame.display.set_mode((self.screen_width, self.screen_height))
+        pygame.display.set_caption("Womble jump menu")
+        self.clock = pygame.time.Clock()
+        self.directory = os.getcwd()
+        self.bg = pygame.image.load(self.directory +"/res/backgrounds/the_wombles.png")
+
+    def get_font(self, size): 
+        return pygame.font.Font(self.directory +"/res/fonts/PublicPixel.ttf", size)
+
+    def level_select(self):
+        while True:
+            mousep_pos = pygame.mouse.get_pos()
+            self.window.blit(self.bg.image, (self.screen_width/2, self.screen_height/2))
+            
+            map_selection = get_font()
+            
+
+
+
 class Game:
     def __init__(self):
         #Pygame and variable initialisation
@@ -139,7 +166,7 @@ class Game:
             self.colour_list.append(self.rand_color)
         
         #List with all the playforms in the game at that moment
-        self.platforms = [
+        self.map_1_platforms = [
             Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 3, self.screen_height / 1.5), (150, 50), ()),
             Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 2, 250), (150, 50), ()),
             Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 2.5, 100), (150, 50), ()),
@@ -147,7 +174,7 @@ class Game:
             Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 5, 600), (150, 50), ())
         ]
 
-        self.player = Player(self.screen_width, self.screen_height, self.platforms)
+        self.player = Player(self.screen_width, self.screen_height, self.map_1_platforms)
         self.movingl = True
         self.movingr = True
         self.running = True
@@ -187,16 +214,16 @@ class Game:
 
             keys = pygame.key.get_pressed()
             self.handle_events()
-            self.player.update_position(keys, self.platforms)
+            self.player.update_position(keys, self.map_1_platforms)
             self.player.check_floor_collision(self.screen_height)
             # Calculate camera offset based on player positions
             camera_offset = Vector2(0, self.screen_height / 2 - self.player.coords.y)
             self.window.blit(self.bg, (0,-1200 - 0.2*self.player.coords.y))
             self.window.blit(self.finish, (0, win_height + camera_offset.y - 250))
             
-            for platform in self.platforms:
+            for platform in self.map_1_platforms:
                 # if platform.position.y + camera_offset.y > self.screen_height:
-                #     self.platforms.remove(platform)
+                #     self.map_1_platforms.remove(platform)
                 platform.draw(offset=camera_offset, coords=playerinstance.coords)
                 
             window = playerinstance.window
@@ -204,26 +231,26 @@ class Game:
             ip_list = []
             other_player_positions = 0
 
-            hostname = socket.gethostname()
-            ip_address = socket.gethostbyname(hostname)
-            coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
-            serverAddressPort = ("192.168.4.23", 7680)
-            buffersize = 2048
-            packetsToSend = str.encode(json.dumps(coordinates_ip))
-            UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-            UDPclientsocket.sendto(packetsToSend, serverAddressPort)
-            message, _ = UDPclientsocket.recvfrom(buffersize)
-            message = message.decode()
-            other_player_positions = json.loads(message)
-            ip = other_player_positions.keys()
-            ip_list = list(ip)
-            if len(ip_list) != 0:
-                for i in range(len(ip_list)):
-                    ip_list_val = ip_list[i]
-                    coordinates_dict = other_player_positions.get(ip_list_val)
-                    x = coordinates_dict.get("x")
-                    y = coordinates_dict.get("y") + camera_offset.y
-                    pygame.draw.circle(self.window, (100,100,100), (x,y), 10)
+            # hostname = socket.gethostname()
+            # ip_address = socket.gethostbyname(hostname)
+            # coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
+            # serverAddressPort = ("192.168.4.23", 7680)
+            # buffersize = 2048
+            # packetsToSend = str.encode(json.dumps(coordinates_ip))
+            # UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+            # UDPclientsocket.sendto(packetsToSend, serverAddressPort)
+            # message, _ = UDPclientsocket.recvfrom(buffersize)
+            # message = message.decode()
+            # other_player_positions = json.loads(message)
+            # ip = other_player_positions.keys()
+            # ip_list = list(ip)
+            # if len(ip_list) != 0:
+            #     for i in range(len(ip_list)):
+            #         ip_list_val = ip_list[i]
+            #         coordinates_dict = other_player_positions.get(ip_list_val)
+            #         x = coordinates_dict.get("x")
+            #         y = coordinates_dict.get("y") + camera_offset.y
+            #         pygame.draw.circle(self.window, (100,100,100), (x,y), 10)
             
             if len(ip_list) > 0:
                 ip_list_val_1 = ip_list[0]
@@ -243,10 +270,17 @@ class Game:
             pygame.display.flip()
 
 gameinstance = Game()
-playerinstance = Player(800, 600, gameinstance.platforms)
-playerinstance.platforms = gameinstance.platforms
+playerinstance = Player(800, 600, gameinstance.map_1_platforms)
+playerinstance.map_1_platforms = gameinstance.map_1_platforms
 
-if __name__ == "__main__":
-    game = Game()
-    game.run()
+gaming = True
+
+if gaming:
+    menu = Main_Menu()
+    menu.run()
     pygame.quit()
+else:
+    if __name__ == "__main__":
+        game = Game()
+        game.run()
+        pygame.quit()
