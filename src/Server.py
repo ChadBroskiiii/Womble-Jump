@@ -8,8 +8,7 @@ msgFromServer = "Client Connected"
 sentmessage = str.encode(msgFromServer)
 UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 UDPServerSocket.bind((localIP, localPort))
-#test this when you get home
-print("UDP server up and listening")
+print("UDP server on")
 positions = {}
 
 while(True):
@@ -25,7 +24,6 @@ while(True):
         positions[ip] = coordinates_dict
     else:
         positions[ip] = coordinates_dict
-    #print(positions)
     other_player_positions = {k: v for k, v in positions.items() if k != ip}
     other_player_messages = json.dumps(other_player_positions)
 
