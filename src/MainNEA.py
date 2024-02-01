@@ -38,16 +38,16 @@ class Player:
             #Controls the left and right movement with acceleration and deceleration
             if collisionresult == False:
                 if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-                    self.speed -= game.ACCELERATION
+                    self.speed -= gameinstance.ACCELERATION
                 else:
                     if self.speed < 0:
-                        self.speed += game.ACCELERATION
+                        self.speed += gameinstance.ACCELERATION
 
                 if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-                    self.speed += game.ACCELERATION
+                    self.speed += gameinstance.ACCELERATION
                 else:
                     if self.speed > 0:
-                        self.speed -= game.ACCELERATION
+                        self.speed -= gameinstance.ACCELERATION
                 
             #Reverts movement after a collision
             elif collisionresult == "other_coll":               
@@ -62,18 +62,18 @@ class Player:
                         self.jumpCount = -1.5
                 
         #Caps the speed at a certain max speed
-        if self.speed <= -game.MAX_SPEED:
-            self.speed = -game.MAX_SPEED
-        elif self.speed >= game.MAX_SPEED:
-            self.speed = game.MAX_SPEED
+        if self.speed <= -gameinstance.MAX_SPEED:
+            self.speed = -gameinstance.MAX_SPEED
+        elif self.speed >= gameinstance.MAX_SPEED:
+            self.speed = gameinstance.MAX_SPEED
         self.coords.x += self.speed
 
         if self.coords.x <= 0 + self.radius:
             self.speed = 0
             self.coords.x = 0 + self.radius
-        elif self.coords.x >= game.screen_width - self.radius:
+        elif self.coords.x >= gameinstance.screen_width - self.radius:
             self.speed = 0
-            self.coords.x = game.screen_width - self.radius
+            self.coords.x = gameinstance.screen_width - self.radius
         else:
             self.movingl = True
             self.movingr = True
@@ -106,7 +106,7 @@ class Player:
 
         #Makes sure the player doesn't fall through the bottom of the window
         #And resets the double jump count when the player touches the floor
-        if self.coords.y >= (game.screen_height-2*self.radius):
+        if self.coords.y >= (gameinstance.screen_height-2*self.radius):
             self.jump = False
             self.doublejump = 0
             self.falling = False
@@ -129,16 +129,38 @@ class Main_Menu:
         self.clock = pygame.time.Clock()
         self.directory = os.getcwd()
         self.bg = pygame.image.load(self.directory +"/res/backgrounds/the_wombles.png")
+        self.bg = pygame.transform.scale_by(self.bg, 1.3)
 
     def get_font(self, size): 
         return pygame.font.Font(self.directory +"/res/fonts/PublicPixel.ttf", size)
 
     def level_select(self):
         while True:
-            mousep_pos = pygame.mouse.get_pos()
-            self.window.blit(self.bg.image, (self.screen_width/2, self.screen_height/2))
+            mouse_pos = pygame.mouse.get_pos()
+            self.window.blit(self.bg, (-4, -50))
             
-            map_selection = get_font()
+            map_selection = self.get_font(45).render("Map Selection", True, "White")
+            map_rect = map_selection.get_rect(center=(400,50))
+            map1_button = Button(image=pygame.image.load(self.directory+"/res/avatars/Womble_Blue.png"), 
+                                 pos=(200,200),
+                                 text="Map 1",
+                                 font=pygame.font.Font(self.directory+"/res/fonts/PublicPixel.ttf"),
+                                 colour="Orange",
+                                 alt_colour="Blue")
+            
+            for button in [map1_button]:
+                button.colour_change(mouse_pos)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if map1_button.input_check(mouse_pos):
+                        gameinstance.run()
+
+            self.window.blit(map_selection, map_rect)
+            pygame.display.flip()
             
 
 
@@ -277,7 +299,7 @@ gaming = True
 
 if gaming:
     menu = Main_Menu()
-    menu.run()
+    menu.level_select()
     pygame.quit()
 else:
     if __name__ == "__main__":

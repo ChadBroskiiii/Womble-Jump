@@ -5,8 +5,8 @@ class Button:
     def __init__(self, image, pos, text, font, colour, alt_colour):
         self.image = image
         self.pos = Vector2(pos)
-        self.text = text
         self.font = font
+        self.text = text
         self.colour, self.alt_colour = colour, alt_colour
         self.text_render = self.font.render(self.text, True, self.colour)
         if self.image == None:
