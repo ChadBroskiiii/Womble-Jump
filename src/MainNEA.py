@@ -1,4 +1,4 @@
-import pygame, math, socket, json, random, os
+import pygame, math, socket, json, random, os, sys
 from pygame import Vector2
 from Objects import Blocks  # Assuming you have the Blocks class in a separate module
 from Button import Button
@@ -155,6 +155,7 @@ class Main_Menu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if map1_button.input_check(mouse_pos):
                         gameinstance.run()
