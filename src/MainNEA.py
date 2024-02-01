@@ -139,14 +139,16 @@ class Main_Menu:
             mouse_pos = pygame.mouse.get_pos()
             self.window.blit(self.bg, (-4, -50))
             
-            map_selection = self.get_font(45).render("Map Selection", True, "White")
+            map_selection = self.get_font(45).render("Map Selection", True, "Black")
             map_rect = map_selection.get_rect(center=(400,50))
-            map1_button = Button(image=pygame.image.load(self.directory+"/res/avatars/Womble_Blue.png"), 
-                                 pos=(200,200),
-                                 text="Map 1",
+            map1_image = pygame.image.load(self.directory+"/res/assets/1.png")
+            map1_image = pygame.transform.scale_by(map1_image, 0.5)
+            map1_button = Button(image=map1_image, 
+                                 pos=(200,400),
+                                 text="MAP 1",
                                  font=pygame.font.Font(self.directory+"/res/fonts/PublicPixel.ttf"),
-                                 colour="Orange",
-                                 alt_colour="Blue")
+                                 colour="Red",
+                                 alt_colour="Grey")
             
             for button in [map1_button]:
                 button.colour_change(mouse_pos)
