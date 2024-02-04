@@ -220,6 +220,7 @@ class Game:
                     self.player.spacepressed == False
             if event.type == pygame.QUIT:
                 self.running = False
+                sys.exit()
 
 
     def text(self, text, x, y, size):
