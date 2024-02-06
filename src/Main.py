@@ -125,7 +125,7 @@ class Main_Menu:
         self.screen_width = 800
         self.screen_height = 600
         self.window = pygame.display.set_mode((self.screen_width, self.screen_height))
-        pygame.display.set_caption("Womble jump menu")
+        pygame.display.set_caption("Womble jump")
         self.clock = pygame.time.Clock()
         self.directory = os.getcwd()
         self.bg = pygame.image.load(self.directory +"/res/backgrounds/the_wombles.png")
@@ -248,12 +248,10 @@ class Game:
             self.window.blit(self.finish, (0, win_height + camera_offset.y - 250))
             
             for platform in self.map_1_platforms:
-                # if platform.position.y + camera_offset.y > self.screen_height:
-                #     self.map_1_platforms.remove(platform)
                 platform.draw(offset=camera_offset, coords=playerinstance.coords)
                 
             window = playerinstance.window
-            window.blit(playerinstance.image, (self.player.coords.x - 25, self.player.coords.y + camera_offset.y - 45))
+            window.blit(playerinstance.image, (self.player.coords.x - 25, self.player.coords.y + camera_offset.y - 15))
             ip_list = []
             other_player_positions = 0
 
