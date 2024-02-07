@@ -42,24 +42,24 @@ class Player:
                 else:
                     if self.speed < 0:
                         self.speed += gameinstance.ACCELERATION
-
                 if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                     self.speed += gameinstance.ACCELERATION
                 else:
                     if self.speed > 0:
                         self.speed -= gameinstance.ACCELERATION
+                print(self.speed)
                 
             #Reverts movement after a collision
-            elif collisionresult == "other_coll":               
-                if midpoint > self.coords.x:
-                    self.speed = 0
-                    self.coords.x -= 0.75
-                elif midpoint < self.coords.x:
-                    self.speed = 0
-                    self.coords.x += 0.75
-                if self.jumpCount > 0:
-                    if bottom < self.coords.y:
+            elif collisionresult == "other_coll":     
+                if bottom < self.coords.y:
+                    if self.jumpCount >= 0:
                         self.jumpCount = -1.5
+                else:          
+                    if midpoint > self.coords.x:
+                        self.coords.x = platform.get_position_x() - 10
+                    elif midpoint < self.coords.x:
+                        self.coords.x = platform.get_position_x() + platform.get_size_x() + 10
+                
                 
         #Caps the speed at a certain max speed
         if self.speed <= -gameinstance.MAX_SPEED:
@@ -192,11 +192,13 @@ class Game:
         
         #List with all the playforms in the game at that moment
         self.map_1_platforms = [
-            Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 3, self.screen_height / 1.5), (150, 50), ()),
-            Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 2, 250), (150, 50), ()),
-            Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 2.5, 100), (150, 50), ()),
-            Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 1.5, 50), (150, 50), ()),
-            Blocks(self.window, random.choice(self.colour_list), (self.screen_width / 5, 600), (150, 50), ())
+            Blocks(self.window, random.choice(self.colour_list), (250, 500), (150, 500), ()), 
+            Blocks(self.window, random.choice(self.colour_list), (500, 200), (150, 50), ()), 
+            Blocks(self.window, random.choice(self.colour_list), (400, 50), (150, 50), ()),
+            Blocks(self.window, random.choice(self.colour_list), (600, -100), (150, 50), ()),
+            Blocks(self.window, random.choice(self.colour_list), (450, -250), (150, 50), ()),  
+            Blocks(self.window, random.choice(self.colour_list), (200, -450), (150, 50), ()),
+            Blocks(self.window, random.choice(self.colour_list), (300, -650), (150, 50), ()),     
         ]
 
         self.player = Player(self.screen_width, self.screen_height, self.map_1_platforms)
@@ -257,26 +259,26 @@ class Game:
             other_player_1 = pygame.image.load(self.directory + "/res/avatars/Womble_Red.png")
             other_player_1 = pygame.transform.scale(other_player_1, (50, 50))
 
-            hostname = socket.gethostname()
-            ip_address = socket.gethostbyname(hostname)
-            coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
-            serverAddressPort = ("192.168.4.23", 7680)
-            buffersize = 2048
-            packetsToSend = str.encode(json.dumps(coordinates_ip))
-            UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-            UDPclientsocket.sendto(packetsToSend, serverAddressPort)
-            message, _ = UDPclientsocket.recvfrom(buffersize)
-            message = message.decode()
-            other_player_positions = json.loads(message)
-            ip = other_player_positions.keys()
-            ip_list = list(ip)
-            if len(ip_list) != 0:
-                for i in range(len(ip_list)):
-                    ip_list_val = ip_list[i]
-                    coordinates_dict = other_player_positions.get(ip_list_val)
-                    x = coordinates_dict.get("x")
-                    y = coordinates_dict.get("y") + camera_offset.y
-                    self.window.blit(other_player_1, (x - 25, y + camera_offset.y - 15))
+            # hostname = socket.gethostname()
+            # ip_address = socket.gethostbyname(hostname)
+            # coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
+            # serverAddressPort = ("192.168.150.129", 7680)
+            # buffersize = 2048
+            # packetsToSend = str.encode(json.dumps(coordinates_ip))
+            # UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+            # UDPclientsocket.sendto(packetsToSend, serverAddressPort)
+            # message, _ = UDPclientsocket.recvfrom(buffersize)
+            # message = message.decode()
+            # other_player_positions = json.loads(message)
+            # ip = other_player_positions.keys()
+            # ip_list = list(ip)
+            # if len(ip_list) != 0:
+            #     for i in range(len(ip_list)):
+            #         ip_list_val = ip_list[i]
+            #         coordinates_dict = other_player_positions.get(ip_list_val)
+            #         x = coordinates_dict.get("x")
+            #         y = coordinates_dict.get("y") + camera_offset.y
+            #         self.window.blit(other_player_1, (x - 25, y + camera_offset.y - 15))
             
             if len(ip_list) > 0:
                 ip_list_val_1 = ip_list[0]
