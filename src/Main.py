@@ -47,7 +47,6 @@ class Player:
                 else:
                     if self.speed > 0:
                         self.speed -= gameinstance.ACCELERATION
-                print(self.speed)
                 
             #Reverts movement after a collision
             elif collisionresult == "other_coll":     
@@ -192,13 +191,14 @@ class Game:
         
         #List with all the playforms in the game at that moment
         self.map_1_platforms = [
-            Blocks(self.window, random.choice(self.colour_list), (250, 500), (150, 500), ()), 
+            Blocks(self.window, (86, 125, 70), (-20, self.screen_height + 32), (900, 500), ()),
+            Blocks(self.window, random.choice(self.colour_list), (250, 500), (150, 50), ()), 
             Blocks(self.window, random.choice(self.colour_list), (500, 200), (150, 50), ()), 
             Blocks(self.window, random.choice(self.colour_list), (400, 50), (150, 50), ()),
             Blocks(self.window, random.choice(self.colour_list), (600, -100), (150, 50), ()),
             Blocks(self.window, random.choice(self.colour_list), (450, -250), (150, 50), ()),  
             Blocks(self.window, random.choice(self.colour_list), (200, -450), (150, 50), ()),
-            Blocks(self.window, random.choice(self.colour_list), (300, -650), (150, 50), ()),     
+            Blocks(self.window, random.choice(self.colour_list), (300, -650), (150, 50), ())     
         ]
 
         self.player = Player(self.screen_width, self.screen_height, self.map_1_platforms)
@@ -246,7 +246,7 @@ class Game:
             self.player.check_floor_collision(self.screen_height)
             # Calculate camera offset based on player positions
             camera_offset = Vector2(0, self.screen_height / 2 - self.player.coords.y)
-            self.window.blit(self.bg, (0,-1200 - 0.2*self.player.coords.y))
+            self.window.blit(self.bg, (0,-1300 - 0.2*self.player.coords.y))
             self.window.blit(self.finish, (0, win_height + camera_offset.y - 250))
             
             for platform in self.map_1_platforms:
