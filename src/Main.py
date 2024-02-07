@@ -17,6 +17,8 @@ class Player:
         self.jumpCount = 0
         self.jumpMaximum = 9
         self.speed = 0
+        self.sprinting = False
+        self.sprint_level = 50
         self.doublejump = 0
         self.tempdouble = self.doublejump
         self.maxjumpscount = 30000
@@ -214,7 +216,7 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LSHIFT:
                     self.MAX_SPEED = 5
-
+                    self.player.sprinting = True
                 if event.key == pygame.K_SPACE or event.key == pygame.K_UP or event.key == pygame.K_w:
                     self.player.spacepressed = True
                     if self.player.doublejump < self.player.maxjumpscount:
@@ -227,6 +229,7 @@ class Game:
                     self.player.spacepressed == False
                 if event.key == pygame.K_LSHIFT:
                     self.MAX_SPEED = 3
+                    self.player.sprinting = False
             if event.type == pygame.QUIT:
                 self.running = False
                 sys.exit()
@@ -256,6 +259,26 @@ class Game:
             self.window.blit(self.bg, (0,-1300 - 0.2*self.player.coords.y))
             self.window.blit(self.finish, (0, win_height + camera_offset.y - 250))
             
+            if self.player.sprinting:
+                if self.player.sprint_level > 0:
+                    self.player.sprint_level -= 0.5
+            elif not self.player.sprinting:
+                if self.player.sprint_level < 50:
+                    self.player.sprint_level += 0.25
+
+            if self.player.sprint_level <= 0 or self.player.sprinting == False:
+                self.MAX_SPEED = 3
+            elif self.player.sprinting == True:
+                self.MAX_SPEED = 5
+
+            sprint_rect_topleft = (50, 50)
+            sprint_rect_topright = (50 + self.player.sprint_level, 50)
+            sprint_rect_bottomleft = (50, 25)
+            sprint_rect_bottomright = (50 + self.player.sprint_level, 25)
+
+            sprint_rect = pygame.draw.polygon(self.window, "left")
+
+
             for platform in self.map_1_platforms:
                 platform.draw(offset=camera_offset, coords=playerinstance.coords)
                 
