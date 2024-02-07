@@ -275,8 +275,8 @@ class Game:
             sprint_rect_topright = (50 + self.player.sprint_level, 50)
             sprint_rect_bottomleft = (50, 25)
             sprint_rect_bottomright = (50 + self.player.sprint_level, 25)
-
-            sprint_rect = pygame.draw.polygon(self.window, "left")
+            sprint_coords = [sprint_rect_topleft, sprint_rect_bottomleft, sprint_rect_bottomright, sprint_rect_topright]
+            sprint_rect = pygame.draw.polygon(self.window, "Green", sprint_coords)
 
 
             for platform in self.map_1_platforms:
