@@ -271,17 +271,18 @@ class Game:
             elif self.player.sprinting == True:
                 self.MAX_SPEED = 5
 
-            sprint_rect_topleft = (50, 50)
-            sprint_rect_topright = (50 + self.player.sprint_level, 50)
-            sprint_rect_bottomleft = (50, 25)
-            sprint_rect_bottomright = (50 + self.player.sprint_level, 25)
-            sprint_coords = [sprint_rect_topleft, sprint_rect_bottomleft, sprint_rect_bottomright, sprint_rect_topright]
-            sprint_rect = pygame.draw.polygon(self.window, "Green", sprint_coords)
-
 
             for platform in self.map_1_platforms:
                 platform.draw(offset=camera_offset, coords=playerinstance.coords)
                 
+            sprint_rect_topleft = (50, self.screen_height -50)
+            sprint_rect_topright = (50 + self.player.sprint_level, self.screen_height -50)
+            sprint_rect_bottomleft = (50, self.screen_height -40)
+            sprint_rect_bottomright = (50 + self.player.sprint_level, self.screen_height -40)
+            sprint_coords = [sprint_rect_topleft, sprint_rect_bottomleft, sprint_rect_bottomright, sprint_rect_topright]
+            pygame.draw.rect(self.window, "Black", (45, self.screen_height -55, 61, 21))
+            pygame.draw.polygon(self.window, "Green", sprint_coords)
+
             window = playerinstance.window
             window.blit(playerinstance.image, (self.player.coords.x - 25, self.player.coords.y + camera_offset.y - 5))
             ip_list = []
