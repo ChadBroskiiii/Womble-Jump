@@ -15,7 +15,7 @@ class Player:
         self.coords = Vector2(screen_width / 2, screen_height - 20)
         self.jump = False
         self.jumpCount = 0
-        self.jumpMaximum = 10
+        self.jumpMaximum = 9
         self.speed = 0
         self.doublejump = 0
         self.tempdouble = self.doublejump
@@ -93,7 +93,7 @@ class Player:
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
 
             if collisionresult == "top_coll":
-                if self.jumpCount < 0:
+                if self.jumpCount <= 0:
                     self.doublejump = 0
                     self.jump = False
                     self.coords.y = platform.get_position_y()# - self.radius
@@ -175,7 +175,7 @@ class Game:
         self.screen_width = 800
         self.screen_height = 600
         self.ACCELERATION = 0.25
-        self.MAX_SPEED = 5
+        self.MAX_SPEED = 3
         self.speed = 0
         self.window = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Womble jump")
@@ -193,11 +193,13 @@ class Game:
         self.map_1_platforms = [
             Blocks(self.window, (86, 125, 70), (-20, self.screen_height + 32), (900, 500), ()),
             Blocks(self.window, random.choice(self.colour_list), (250, 500), (150, 50), ()), 
-            Blocks(self.window, random.choice(self.colour_list), (500, 200), (150, 50), ()), 
+            Blocks(self.window, random.choice(self.colour_list), (100, 350), (150, 50), ()),
+            Blocks(self.window, random.choice(self.colour_list), (600, 200), (150, 50), ()), 
             Blocks(self.window, random.choice(self.colour_list), (400, 50), (150, 50), ()),
             Blocks(self.window, random.choice(self.colour_list), (600, -100), (150, 50), ()),
             Blocks(self.window, random.choice(self.colour_list), (450, -250), (150, 50), ()),  
             Blocks(self.window, random.choice(self.colour_list), (200, -450), (150, 50), ()),
+            Blocks(self.window, random.choice(self.colour_list), (500, -450), (150, 50), ()),
             Blocks(self.window, random.choice(self.colour_list), (300, -650), (150, 50), ())     
         ]
 
@@ -210,6 +212,9 @@ class Game:
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LSHIFT:
+                    self.MAX_SPEED = 5
+
                 if event.key == pygame.K_SPACE or event.key == pygame.K_UP or event.key == pygame.K_w:
                     self.player.spacepressed = True
                     if self.player.doublejump < self.player.maxjumpscount:
@@ -220,6 +225,8 @@ class Game:
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE or event.key == pygame.K_UP or event.key == pygame.K_w:
                     self.player.spacepressed == False
+                if event.key == pygame.K_LSHIFT:
+                    self.MAX_SPEED = 3
             if event.type == pygame.QUIT:
                 self.running = False
                 sys.exit()
@@ -253,7 +260,7 @@ class Game:
                 platform.draw(offset=camera_offset, coords=playerinstance.coords)
                 
             window = playerinstance.window
-            window.blit(playerinstance.image, (self.player.coords.x - 25, self.player.coords.y + camera_offset.y - 15))
+            window.blit(playerinstance.image, (self.player.coords.x - 25, self.player.coords.y + camera_offset.y - 5))
             ip_list = []
             other_player_positions = 0
             other_player_1 = pygame.image.load(self.directory + "/res/avatars/Womble_Red.png")
