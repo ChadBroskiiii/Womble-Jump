@@ -34,7 +34,7 @@ class Blocks:
         pygame.draw.polygon(self.surface, (125, 125, 125), trapezium_coords)
 
     def collision(self, coordsx, coordsy, radius, platform):
-        hitbox = pygame.rect.Rect(coordsx - radius, coordsy - radius, radius * 2 + 15, radius * 2 + 15)
+        hitbox = pygame.rect.Rect(coordsx - radius, coordsy - radius, radius * 2 + 15, radius * 2 + 25)
         center = Vector2(coordsx + radius, coordsy + radius)
 
         topresult = pygame.Rect.colliderect(hitbox, self.collisionrect)
@@ -49,7 +49,7 @@ class Blocks:
         return False
 
     def get_position_y(self):
-        return self.position.y - 75
+        return self.position.y - 85
     
     def get_main_position_y(self):
         return self.position.y

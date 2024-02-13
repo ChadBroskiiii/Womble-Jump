@@ -266,9 +266,9 @@ class Game:
                 if self.player.sprint_level < 50:
                     self.player.sprint_level += 0.25
 
-            if self.player.sprint_level <= 0 or self.player.sprinting == False:
+            if self.player.sprint_level <= 0 or not self.player.sprinting:
                 self.MAX_SPEED = 3
-            elif self.player.sprinting == True:
+            elif self.player.sprinting:
                 self.MAX_SPEED = 5
 
 
