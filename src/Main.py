@@ -345,7 +345,7 @@ class Game:
                     coordinates_dict = other_player_positions.get(ip_list_val)
                     x = coordinates_dict.get("x")
                     y = coordinates_dict.get("y") + camera_offset.y
-                    self.window.blit(other_player_1, (x - 25, y + camera_offset.y - 15))
+                    self.window.blit(other_player_1, (x - 25, y - 5))
             
             if len(ip_list) > 0:
                 ip_list_val_1 = ip_list[0]
