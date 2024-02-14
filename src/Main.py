@@ -1,6 +1,6 @@
 import pygame, math, socket, json, random, os, sys
 from pygame import Vector2
-from Objects import Blocks  # Assuming you have the Blocks class in a separate module
+from Objects import Blocks
 from Button import Button
 
 class Player:
@@ -31,7 +31,7 @@ class Player:
         self.image = pygame.image.load(self.directory +"/res/avatars/Womble_Blue.png")
         self.image = pygame.transform.scale(self.image, (50, 50))
 
-    def update_position(self, keys):
+    def update_position(self, keys, max_speed):
         #Iterates through each platform and checks for collisions individually
         for platform in self.main_map:
             midpoint = platform.get_position_x() + platform.get_size_x()/2
@@ -64,10 +64,10 @@ class Player:
                 
                 
         #Caps the speed at a certain max speed
-        if self.speed <= -gameinstance.MAX_SPEED:
-            self.speed = -gameinstance.MAX_SPEED
-        elif self.speed >= gameinstance.MAX_SPEED:
-            self.speed = gameinstance.MAX_SPEED
+        if self.speed <= -max_speed:
+            self.speed = -max_speed
+        elif self.speed >= max_speed:
+            self.speed = max_speed
         self.coords.x += self.speed
 
         if self.coords.x <= 0 + self.radius:
@@ -241,7 +241,6 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LSHIFT:
-                    self.MAX_SPEED = 5
                     self.player.sprinting = True
                 if event.key == pygame.K_SPACE or event.key == pygame.K_UP or event.key == pygame.K_w:
                     self.player.spacepressed = True
@@ -254,7 +253,6 @@ class Game:
                 if event.key == pygame.K_SPACE or event.key == pygame.K_UP or event.key == pygame.K_w:
                     self.player.spacepressed == False
                 if event.key == pygame.K_LSHIFT:
-                    self.MAX_SPEED = 3
                     self.player.sprinting = False
             if event.type == pygame.QUIT:
                 self.running = False
@@ -278,7 +276,7 @@ class Game:
 
             keys = pygame.key.get_pressed()
             self.handle_events()           
-            self.player.update_position(keys)
+            
             
             self.player.check_floor_collision(self.screen_height)
             # Calculate camera offset based on player positions
@@ -289,14 +287,18 @@ class Game:
             if self.player.sprinting:
                 if self.player.sprint_level > 0:
                     self.player.sprint_level -= 0.5
-            elif not self.player.sprinting:
-                if self.player.sprint_level < 50:
-                    self.player.sprint_level += 0.25
+                else:
+                    self.player.sprinting = False
+            elif self.player.sprint_level < 50:
+                self.player.sprint_level += 0.25
 
-            if self.player.sprint_level <= 0 or not self.player.sprinting:
-                self.MAX_SPEED = 3
-            elif self.player.sprinting:
+            if self.player.sprinting:
                 self.MAX_SPEED = 5
+            else:
+                self.MAX_SPEED = 3
+
+            self.player.update_position(keys, self.MAX_SPEED)
+
 
 
             for platform in self.main_map:
@@ -369,6 +371,5 @@ if gaming:
     pygame.quit()
 else:
     if __name__ == "__main__":
-        game = Game()
         gameinstance.run()
         pygame.quit()
