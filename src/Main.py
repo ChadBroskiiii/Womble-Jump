@@ -4,7 +4,7 @@ from Objects import Blocks  # Assuming you have the Blocks class in a separate m
 from Button import Button
 
 class Player:
-    def __init__(self, screen_width, screen_height, map_1_platforms):
+    def __init__(self, screen_width, screen_height, main_map):
         #Initialisation variables
         self.screen_width = 800
         self.screen_height = 600
@@ -16,6 +16,7 @@ class Player:
         self.jump = False
         self.jumpCount = 0
         self.jumpMaximum = 9
+        self.main_map = main_map
         self.speed = 0
         self.sprinting = False
         self.sprint_level = 50
@@ -25,14 +26,14 @@ class Player:
         self.falling = False
         self.circle_hbox = pygame.Rect(self.coords.x - self.radius, self.coords.y + self.radius, self.radius * 2 + 1,
                                        self.radius * 2 + 1)
-        self.map_1_platforms = map_1_platforms
+        #self.main_map = gameinstance.main_map
         self.directory = os.getcwd()
         self.image = pygame.image.load(self.directory +"/res/avatars/Womble_Blue.png")
         self.image = pygame.transform.scale(self.image, (50, 50))
 
-    def update_position(self, keys, map_1_platforms):
+    def update_position(self, keys):
         #Iterates through each platform and checks for collisions individually
-        for platform in map_1_platforms:
+        for platform in self.main_map:
             midpoint = platform.get_position_x() + platform.get_size_x()/2
             bottom = platform.get_main_position_y() + platform.get_size_y() - 5
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
@@ -91,7 +92,7 @@ class Player:
                     self.jump = True
 
         #Checks for top collisions and stops the player
-        for platform in map_1_platforms:
+        for platform in self.main_map:
             collisionresult = platform.collision(self.coords.x, self.coords.y, self.radius, platform)
 
             if collisionresult == "top_coll":
@@ -121,7 +122,6 @@ class Player:
 class Main_Menu:
     def __init__(self):
         pygame.init()
-        self.map1 = gameinstance.map_1_platforms
         self.FPS = 120
         self.screen_width = 800
         self.screen_height = 600
@@ -131,6 +131,7 @@ class Main_Menu:
         self.directory = os.getcwd()
         self.bg = pygame.image.load(self.directory +"/res/backgrounds/the_wombles.png")
         self.bg = pygame.transform.scale_by(self.bg, 1.3)
+        self.main_map = 0
 
     def get_font(self, size): 
         return pygame.font.Font(self.directory +"/res/fonts/PublicPixel.ttf", size)
@@ -139,19 +140,30 @@ class Main_Menu:
         while True:
             mouse_pos = pygame.mouse.get_pos()
             self.window.blit(self.bg, (-4, -50))
-            
-            map_selection = self.get_font(45).render("Map Selection", True, "Black")
+            map_selection = self.get_font(45).render("Map Selection", True, "Red")
             map_rect = map_selection.get_rect(center=(400,50))
             map1_image = pygame.image.load(self.directory+"/res/assets/1.png")
             map1_image = pygame.transform.scale_by(map1_image, 0.5)
+            map2_image = pygame.image.load(self.directory+"/res/assets/2.jpg")
+            map2_image = pygame.transform.scale_by(map2_image, 0.46)
             map1_button = Button(image=map1_image, 
                                  pos=(200,400),
                                  text="MAP 1",
                                  font=pygame.font.Font(self.directory+"/res/fonts/PublicPixel.ttf"),
                                  colour="Red",
                                  alt_colour="Grey")
+            map2_button = Button(image=map2_image, 
+                                 pos=(600,400),
+                                 text="MAP 2",
+                                 font=pygame.font.Font(self.directory+"/res/fonts/PublicPixel.ttf"),
+                                 colour="Red",
+                                 alt_colour="Grey")
             
             for button in [map1_button]:
+                button.colour_change(mouse_pos)
+                button.update(self.window)
+
+            for button in [map2_button]:
                 button.colour_change(mouse_pos)
                 button.update(self.window)
 
@@ -161,16 +173,21 @@ class Main_Menu:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if map1_button.input_check(mouse_pos):
-                        gameinstance.run()
+                        self.main_map = 1
+                        game = Game(self.main_map)
+                        game.run()
+                    if map2_button.input_check(mouse_pos):
+                        self.main_map = 2
+                        game = Game(self.main_map)
+                        game.run()
+
 
             self.window.blit(map_selection, map_rect)
             pygame.display.flip()
-            
-
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, main_map):
         #Pygame and variable initialisation
         pygame.init()
         self.FPS = 120
@@ -182,6 +199,7 @@ class Game:
         self.window = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Womble jump")
         self.clock = pygame.time.Clock()
+        self.main_map = main_map
         self.colour_list = []
         self.directory = os.getcwd()
         self.bg = pygame.image.load(self.directory +"/res/backgrounds/blue_sky_pixel_art.jpg")
@@ -190,7 +208,6 @@ class Game:
         for i in range(16):
             self.rand_color = random.choices(range(256), k=3)
             self.colour_list.append(self.rand_color)
-        
         #List with all the playforms in the game at that moment
         self.map_1_platforms = [
             Blocks(self.window, (86, 125, 70), (-20, self.screen_height + 32), (900, 500), ()),
@@ -205,7 +222,16 @@ class Game:
             Blocks(self.window, random.choice(self.colour_list), (300, -650), (150, 50), ())     
         ]
 
-        self.player = Player(self.screen_width, self.screen_height, self.map_1_platforms)
+        self.map_2_platforms = [
+            Blocks(self.window, (86, 125, 70), (-20, self.screen_height + 32), (900, 500), ()),
+            Blocks(self.window, random.choice(self.colour_list), (250, 400), (150, 50), ()),
+        ]
+
+        if self.main_map == 1:
+            self.main_map = self.map_1_platforms
+        elif self.main_map == 2:
+            self.main_map = self.map_2_platforms
+        self.player = Player(self.screen_width, self.screen_height, self.main_map)
         self.movingl = True
         self.movingr = True
         self.running = True
@@ -251,8 +277,9 @@ class Game:
             pygame.time.delay(0)
 
             keys = pygame.key.get_pressed()
-            self.handle_events()
-            self.player.update_position(keys, self.map_1_platforms)
+            self.handle_events()           
+            self.player.update_position(keys)
+            
             self.player.check_floor_collision(self.screen_height)
             # Calculate camera offset based on player positions
             camera_offset = Vector2(0, self.screen_height / 2 - self.player.coords.y)
@@ -272,7 +299,7 @@ class Game:
                 self.MAX_SPEED = 5
 
 
-            for platform in self.map_1_platforms:
+            for platform in self.main_map:
                 platform.draw(offset=camera_offset, coords=playerinstance.coords)
                 
             sprint_rect_topleft = (50, self.screen_height -50)
@@ -328,9 +355,11 @@ class Game:
             self.clock.tick(self.FPS)
             pygame.display.flip()
 
-gameinstance = Game()
-playerinstance = Player(800, 600, gameinstance.map_1_platforms)
-playerinstance.map_1_platforms = gameinstance.map_1_platforms
+main_menu = Main_Menu()
+main_map = main_menu.main_map
+gameinstance = Game(main_map)
+playerinstance = Player(800, 600, gameinstance.main_map)
+playerinstance.main_map = gameinstance.main_map
 
 gaming = True
 
@@ -341,5 +370,5 @@ if gaming:
 else:
     if __name__ == "__main__":
         game = Game()
-        game.run()
+        gameinstance.run()
         pygame.quit()
