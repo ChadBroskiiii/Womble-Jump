@@ -202,7 +202,9 @@ class Game:
         self.main_map = main_map
         self.colour_list = []
         self.directory = os.getcwd()
-        self.bg = pygame.image.load(self.directory +"/res/backgrounds/blue_sky_pixel_art.jpg")
+        self.bg1 = pygame.image.load(self.directory +"/res/backgrounds/blue_sky_pixel_art.jpg")
+        self.bg2 = pygame.image.load(self.directory +"/res/backgrounds/desert.png")
+        self.bg2 = pygame.transform.scale_by(self.bg2, 1.5)
         self.finish = pygame.image.load(self.directory + "/res/assets/checkered_line.jpg")
         self.finish = pygame.transform.scale(self.finish, (self.screen_width, 250))
         for i in range(16):
@@ -223,7 +225,7 @@ class Game:
         ]
 
         self.map_2_platforms = [
-            Blocks(self.window, (86, 125, 70), (-20, self.screen_height + 32), (900, 500), ()),
+            Blocks(self.window, (200, 173, 127), (-20, self.screen_height + 32), (900, 500), ()),
             Blocks(self.window, random.choice(self.colour_list), (250, 400), (150, 50), ()),
         ]
 
@@ -281,7 +283,12 @@ class Game:
             self.player.check_floor_collision(self.screen_height)
             # Calculate camera offset based on player positions
             camera_offset = Vector2(0, self.screen_height / 2 - self.player.coords.y)
-            self.window.blit(self.bg, (0,-1300 - 0.2*self.player.coords.y))
+
+            if self.main_map == self.map_1_platforms:
+                self.window.blit(self.bg1, (0,-1300 - 0.2*self.player.coords.y))
+            elif self.main_map == self.map_2_platforms:
+                self.window.blit(self.bg2, (0,-500 - 0.2*self.player.coords.y))
+
             self.window.blit(self.finish, (0, win_height + camera_offset.y - 250))
             
             if self.player.sprinting:
