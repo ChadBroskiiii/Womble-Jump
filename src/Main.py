@@ -1,4 +1,5 @@
-import pygame, math, socket, json, random, os, sys
+import pygame, math, socket, json, random, os, sys, time
+from waiting import wait, TimeoutExpired
 from pygame import Vector2
 from Objects import Blocks
 from Button import Button
@@ -184,7 +185,11 @@ class Main_Menu:
 
             self.window.blit(map_selection, map_rect)
             pygame.display.flip()
-
+waiter = 0
+def waitinger(waiter):
+    if waiter == 1:
+        return True
+    return False
 
 class Game:
     def __init__(self, main_map):
@@ -202,6 +207,7 @@ class Game:
         self.main_map = main_map
         self.colour_list = []
         self.directory = os.getcwd()
+        self.waiter = 0
         self.bg1 = pygame.image.load(self.directory +"/res/backgrounds/blue_sky_pixel_art.jpg")
         self.bg2 = pygame.image.load(self.directory +"/res/backgrounds/desert.png")
         self.bg2 = pygame.transform.scale_by(self.bg2, 1.5)
@@ -270,9 +276,12 @@ class Game:
         text = font.render(text, True, colour)
         self.window.blit(text, (x,y))
 
+    
 
     def run(self):
+        
         while self.running:
+            
             win_height = -800
             pygame.time.delay(0)
 
@@ -326,39 +335,65 @@ class Game:
             other_player_1 = pygame.image.load(self.directory + "/res/avatars/Womble_Red.png")
             other_player_1 = pygame.transform.scale(other_player_1, (50, 50))
 
-            hostname = socket.gethostname()
-            ip_address = socket.gethostbyname(hostname)
-            coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
-            serverAddressPort = ("192.168.4.23", 7680)
-            buffersize = 2048
-            packetsToSend = str.encode(json.dumps(coordinates_ip))
-            UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-            UDPclientsocket.sendto(packetsToSend, serverAddressPort)
-            message, _ = UDPclientsocket.recvfrom(buffersize)
-            message = message.decode()
-            other_player_positions = json.loads(message)
-            ip = other_player_positions.keys()
-            ip_list = list(ip)
-            if len(ip_list) != 0:
-                for i in range(len(ip_list)):
-                    ip_list_val = ip_list[i]
-                    coordinates_dict = other_player_positions.get(ip_list_val)
-                    x = coordinates_dict.get("x")
-                    y = coordinates_dict.get("y") + camera_offset.y
-                    self.window.blit(other_player_1, (x - 25, y - 5))
-            
+            # hostname = socket.gethostname()
+            # ip_address = socket.gethostbyname(hostname)
+            # coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
+            # serverAddressPort = ("192.168.4.23", 7680)
+            # buffersize = 2048
+            # packetsToSend = str.encode(json.dumps(coordinates_ip))
+            # UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+            # UDPclientsocket.sendto(packetsToSend, serverAddressPort)
+            # message, _ = UDPclientsocket.recvfrom(buffersize)
+            # message = message.decode()
+            # other_player_positions = json.loads(message)
+            # ip = other_player_positions.keys()
+            # ip_list = list(ip)
+            # if len(ip_list) != 0:
+            #     for i in range(len(ip_list)):
+            #         ip_list_val = ip_list[i]
+            #         coordinates_dict = other_player_positions.get(ip_list_val)
+            #         x = coordinates_dict.get("x")
+            #         y = coordinates_dict.get("y") + camera_offset.y
+            #         self.window.blit(other_player_1, (x - 25, y - 5))
+            self.waiter = 1
             if len(ip_list) > 0:
                 ip_list_val_1 = ip_list[0]
                 player_2_coords = other_player_positions.get(ip_list_val_1)
                 player_2_y = player_2_coords.get("y") + camera_offset.y
-
                 if player_2_y <= win_height:
-                    self.text("PLAYER 2 WINS", 78.5, self.screen_height/3, 50)
+                    try:
+                        self.text("PLAYER 2 WINS", 78.5, self.screen_height/3, 50)
+                        self.text("RELOADING MAP", 78.5, self.screen_height/4, 50)
+                        pygame.display.update()
+                        wait(lambda : waitinger(waiter), timeout_seconds = 3)
+                        
+                    except TimeoutExpired:
+                        Main_Menu()
+                        break
+
                 elif self.player.coords.y <= win_height:
-                    self.text("PLAYER 1 WINS", 78.5, self.screen_height/3, 50)
+                    try:
+                        self.text("YOU WIN", 78.5, self.screen_height/3, 91)
+                        self.text("RELOADING MAP", 78.5, self.screen_height/4, 50)
+                        pygame.display.update()
+                        wait(lambda : waitinger(waiter), timeout_seconds = 3)
+                        
+                    except TimeoutExpired:
+                        Main_Menu()
+                        break
+
             else:
                 if self.player.coords.y <= win_height:
-                    self.text("PLAYER 1 WINS", 78.5, self.screen_height/3, 50)
+                    try:
+                        self.text("YOU WIN", 78.5, self.screen_height/3, 91)
+                        self.text("RELOADING MAP", 78.5, self.screen_height/4, 50)
+                        pygame.display.update()
+                        wait(lambda : waitinger(waiter), timeout_seconds = 3)
+                        
+                    except TimeoutExpired:
+                        Main_Menu()
+                        break
+
             
 
             self.clock.tick(self.FPS)
