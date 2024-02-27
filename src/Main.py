@@ -23,7 +23,7 @@ class Player:
         self.sprint_level = 50
         self.doublejump = 0
         self.tempdouble = self.doublejump
-        self.maxjumpscount = 30000
+        self.maxjumpscount = 2
         self.falling = False
         self.circle_hbox = pygame.Rect(self.coords.x - self.radius, self.coords.y + self.radius, self.radius * 2 + 1,
                                        self.radius * 2 + 1)
