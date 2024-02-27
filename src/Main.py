@@ -1,4 +1,4 @@
-import pygame, math, socket, json, random, os, sys, time
+import pygame, socket, json, random, os, sys, time
 from waiting import wait, TimeoutExpired
 from pygame import Vector2
 from Objects import Blocks
