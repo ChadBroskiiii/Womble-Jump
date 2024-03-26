@@ -6,7 +6,6 @@ class Button:
         self.image = image
         self.pos = Vector2(pos)
         self.font = font
-        self.font = font
         self.text = text
         self.colour, self.alt_colour = colour, alt_colour
         self.text_render = self.font.render(self.text, True, self.colour)

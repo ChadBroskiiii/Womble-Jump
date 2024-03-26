@@ -191,7 +191,8 @@ def waitinger(waiter):
         return True
     return False
 
-class Game:
+
+class Game(Blocks):
     def __init__(self, main_map):
         #Pygame and variable initialisation
         pygame.init()
@@ -233,6 +234,12 @@ class Game:
         self.map_2_platforms = [
             Blocks(self.window, (200, 173, 127), (-20, self.screen_height + 32), (900, 500), ()),
             Blocks(self.window, random.choice(self.colour_list), (250, 400), (150, 50), ()),
+            Blocks(self.window, random.choice(self.colour_list), (100, 200), (150, 50), ()), 
+            Blocks(self.window, random.choice(self.colour_list), (300, 50), (150, 50), ()),
+            Blocks(self.window, random.choice(self.colour_list), (100, -100), (150, 50), ()),
+            Blocks(self.window, random.choice(self.colour_list), (650, -250), (150, 50), ()),  
+            Blocks(self.window, random.choice(self.colour_list), (600, -450), (150, 50), ()),
+            Blocks(self.window, random.choice(self.colour_list), (100, -650), (150, 50), ()) 
         ]
 
         if self.main_map == 1:
