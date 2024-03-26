@@ -342,26 +342,26 @@ class Game(Blocks):
             other_player_1 = pygame.image.load(self.directory + "/res/avatars/Womble_Red.png")
             other_player_1 = pygame.transform.scale(other_player_1, (50, 50))
 
-            # hostname = socket.gethostname()
-            # ip_address = socket.gethostbyname(hostname)
-            # coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
-            # serverAddressPort = ("192.168.4.23", 7680)
-            # buffersize = 2048
-            # packetsToSend = str.encode(json.dumps(coordinates_ip))
-            # UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-            # UDPclientsocket.sendto(packetsToSend, serverAddressPort)
-            # message, _ = UDPclientsocket.recvfrom(buffersize)
-            # message = message.decode()
-            # other_player_positions = json.loads(message)
-            # ip = other_player_positions.keys()
-            # ip_list = list(ip)
-            # if len(ip_list) != 0:
-            #     for i in range(len(ip_list)):
-            #         ip_list_val = ip_list[i]
-            #         coordinates_dict = other_player_positions.get(ip_list_val)
-            #         x = coordinates_dict.get("x")
-            #         y = coordinates_dict.get("y") + camera_offset.y
-            #         self.window.blit(other_player_1, (x - 25, y - 5))
+            hostname = socket.gethostname()
+            ip_address = socket.gethostbyname(hostname)
+            coordinates_ip = {"x": self.player.coords.x, "y": self.player.coords.y, "ip": ip_address}
+            serverAddressPort = ("192.168.4.23", 7680)
+            buffersize = 2048
+            packetsToSend = str.encode(json.dumps(coordinates_ip))
+            UDPclientsocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+            UDPclientsocket.sendto(packetsToSend, serverAddressPort)
+            message, _ = UDPclientsocket.recvfrom(buffersize)
+            message = message.decode()
+            other_player_positions = json.loads(message)
+            ip = other_player_positions.keys()
+            ip_list = list(ip)
+            if len(ip_list) != 0:
+                for i in range(len(ip_list)):
+                    ip_list_val = ip_list[i]
+                    coordinates_dict = other_player_positions.get(ip_list_val)
+                    x = coordinates_dict.get("x")
+                    y = coordinates_dict.get("y") + camera_offset.y
+                    self.window.blit(other_player_1, (x - 25, y - 5))
             self.waiter = 1
             if len(ip_list) > 0:
                 ip_list_val_1 = ip_list[0]
